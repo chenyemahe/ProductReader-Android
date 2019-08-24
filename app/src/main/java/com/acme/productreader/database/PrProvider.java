@@ -23,7 +23,7 @@ public class PrProvider extends ContentProvider {
 
     public static final String DB_NAME = "acme_product_reader.db";
 
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 1;
 
     private static final String TAG = "PrProvider";
 
@@ -48,25 +48,25 @@ public class PrProvider extends ContentProvider {
 
         String ORDER_DATE = "order_date";
 
-        String ORDER_SKU = "order_store";
+        String ORDER_SKU = "order_sku";
 
-        String ORDER_ASIN = "order_detail";
+        String ORDER_ASIN = "order_asin";
 
-        String ORDER_FNSKU = "order_cashback_company";
+        String ORDER_FNSKU = "order_fnsku";
 
-        String ORDER_PRICE = "order_cashback_state";
+        String ORDER_PRICE = "order_price";
 
-        String ORDER_FEE = "order_cashback_percent";
+        String ORDER_FEE = "order_fee";
 
-        String ORDER_UPC = "order_cashback_amount";
+        String ORDER_UPC = "order_upc";
 
-        String ORDER_CURRENT_NUMBER = "order_total_cost";
+        String ORDER_CURRENT_NUMBER = "order_currentnumber";
 
-        String ORDER_SUPPLY_DAY = "order_category";
+        String ORDER_SUPPLY_DAY = "order_supplyday";
 
-        String ORDER_REQUEST_NUMBER = "order_price_cb_available";
+        String ORDER_REQUEST_NUMBER = "order_requestnumber";
 
-        String ORDER_TOTAL_ADDED = "order_payment_from";
+        String ORDER_TOTAL_ADDED = "order_totaladded";
     }
 
     @Override
@@ -197,7 +197,9 @@ public class PrProvider extends ContentProvider {
                     + ProfileColumns.ORDER_FEE + " VARCHAR, "
                     + ProfileColumns.ORDER_UPC + " VARCHAR, "
                     + ProfileColumns.ORDER_SUPPLY_DAY + " VARCHAR, "
-                    + ProfileColumns.ORDER_CURRENT_NUMBER + " VARCHAR);");
+                    + ProfileColumns.ORDER_CURRENT_NUMBER + " VARCHAR, "
+                    + ProfileColumns.ORDER_REQUEST_NUMBER + " VARCHAR, "
+                    + ProfileColumns.ORDER_TOTAL_ADDED + " VARCHAR);");
         }
 
         @Override
@@ -211,11 +213,12 @@ public class PrProvider extends ContentProvider {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.i(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion
                     + ", which will destroy all old data");
-            switch (oldVersion) {
+            /*switch (oldVersion) {
+                case 0:
                 case 1:
                     try {
                         // upgrade to DB version 2
-                        db.execSQL("ALTER TABLE " + ProfileColumns.TBL_PR_PROFILES + " ADD " + ProfileColumns.ORDER_SUPPLY_DAY + " varchar");
+                        db.execSQL("ALTER TABLE " + ProfileColumns.TBL_PR_PROFILES + " ADD " + ProfileColumns.ORDER_REQUEST_NUMBER + " varchar");
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -226,7 +229,7 @@ public class PrProvider extends ContentProvider {
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-            }
+            }*/
         }
 
         @Override

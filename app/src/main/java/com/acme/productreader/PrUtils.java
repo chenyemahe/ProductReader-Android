@@ -14,6 +14,7 @@ import android.util.Log;
 import com.acme.productreader.database.PrProvider;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -474,7 +475,7 @@ public class PrUtils {
     public static void readExcelFileFromAssets(Activity activity, String filePath, int type) {
 
         Log.d("ye chen", "readExcelFileFromAssets");
-        InputStream stream = activity.getResources().openRawResource(R.raw.product);
+        InputStream stream = activity.getResources().openRawResource(R.raw.home);
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(stream);
             XSSFSheet sheet = workbook.getSheetAt(0);
@@ -484,13 +485,75 @@ public class PrUtils {
                 Row row = sheet.getRow(r);
                 int cellsCount = row.getPhysicalNumberOfCells();
                 String[] value = new String[6];
-                for (int c = 0; c<cellsCount; c++) {
+                for (int c = 0; c<6; c++) {
                     value[c] = getCellAsString(row, c, formulaEvaluator);
                 }
                 if(type == MenuPage.PICKFILE_RESULT_CODE_1) {
                     ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(),value[0]);
                     if (profile == null) {
-                        profile = setProfile(value);
+                        profile = setProfile(value, "home");
+                        PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
+                    } else {
+                        PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
+                    }
+                }
+            }
+            /*
+            // Create a POI File System object
+            POIFSFileSystem myFileSystem = new POIFSFileSystem(myInput);
+            // Create a workbook using the File System
+            HSSFWorkbook myWorkBook = new HSSFWorkbook(myFileSystem);
+            // Get the first sheet from workbook
+            HSSFSheet mySheet = myWorkBook.getSheetAt(0);
+            // We now need something to iterate through the cells.
+            Iterator<Row> rowIter = mySheet.rowIterator();
+            int rowno = 0;
+            while (rowIter.hasNext()) {
+                HSSFRow myRow = (HSSFRow) rowIter.next();
+                if (rowno != 0) {
+                    Iterator<Cell> cellIter = myRow.cellIterator();
+                    int totalRom = myRow.getPhysicalNumberOfCells();
+                    int colno = 0;
+                    String[] value = new String[6];
+                    Log.d("ye chen", value.toString());
+                    while (cellIter.hasNext()) {
+                        HSSFCell myCell = (HSSFCell) cellIter.next();
+                        value[colno] = myCell.toString();
+                        colno++;
+                    }
+                    if(type == MenuPage.PICKFILE_RESULT_CODE_1) {
+                        ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(),value[0]);
+                        if (profile == null) {
+                            profile = setProfile(value);
+                            PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
+                        } else {
+                            PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
+                        }
+                    }
+                }
+                rowno++;
+            }*/
+        } catch (Exception e) {
+            Log.e("ye chen", "error " + e.toString());
+        }
+
+        stream = activity.getResources().openRawResource(R.raw.acme);
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(stream);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            int rowsCount = sheet.getPhysicalNumberOfRows();
+            FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
+            for (int r = 0; r<rowsCount; r++) {
+                Row row = sheet.getRow(r);
+                int cellsCount = row.getPhysicalNumberOfCells();
+                String[] value = new String[6];
+                for (int c = 0; c<6; c++) {
+                    value[c] = getCellAsString(row, c, formulaEvaluator);
+                }
+                if(type == MenuPage.PICKFILE_RESULT_CODE_1) {
+                    ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(),value[0]);
+                    if (profile == null) {
+                        profile = setProfile(value, "acme");
                         PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
                     } else {
                         PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
@@ -537,7 +600,7 @@ public class PrUtils {
         }
     }
 
-    public static ProductProfile setProfile(String[] value) {
+    public static ProductProfile setProfile(String[] value, String filename) {
         ProductProfile p = new ProductProfile();
         p.setSKU(value[0]);
         p.setProductName(value[1]);
@@ -545,6 +608,10 @@ public class PrUtils {
         p.setFNSKU(value[3]);
         p.setPrice(value[4]);
         p.setAmazonFee(value[5]);
+        if(TextUtils.equals(filename,"acme"))
+            p.setTotalAdd("acme");
+        else if(TextUtils.equals(filename, "home"))
+            p.setTotalAdd("home");
         Log.d("ye chen", p.toString());
         return p;
     }

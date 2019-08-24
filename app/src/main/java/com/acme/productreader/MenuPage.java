@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
@@ -49,7 +50,11 @@ public class MenuPage extends Activity implements View.OnClickListener{
                 if (resultCode == -1) {
                     fileUri = data.getData();
                     filePath = fileUri.getPath();
-                    PrUtils.readExcelFileFromAssets(this, filePath, PICKFILE_RESULT_CODE_1);
+                    new Thread() {
+                        public void run(){
+                            PrUtils.readExcelFileFromAssets(MenuPage.this, filePath, PICKFILE_RESULT_CODE_1);
+                        }
+                    }.start();
                 }
                 break;
         }

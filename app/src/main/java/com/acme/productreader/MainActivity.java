@@ -19,12 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
 
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +29,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 
 public class MainActivity extends AppCompatActivity {
@@ -130,9 +124,9 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
             Bundle result = data.getExtras();
             String value = result.getString("barcode");
-            ProductProfile profile = PrManager.getManager().getDB().getAAProfileByFSKU(getContentResolver(),value);
-
-            scanResults .setText(profile.getProductName());
+            ProductProfile profile = PrManager.getManager().getDB().getAAProfileByFSKU(getContentResolver(),value+" ");
+            if(profile != null)
+                scanResults .setText(profile.getProductName());
         }
     }
 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        style="@style/menu_text_style"
+        android:text="@string/menu_title"
+        android:background="@color/color_background"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/Title" />
+
+    <TextView
+        style="@style/menu_text_style"
+        android:text="@string/menu_1"
+        android:id="@+id/menu_1" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_background"
+        />
+    <TextView
+        style="@style/menu_text_style"
+        android:text="@string/menu_2"
+        android:id="@+id/menu_2" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_background"
+        />
+    <TextView
+        style="@style/menu_text_style"
+        android:text="@string/menu_3"
+        android:id="@+id/menu_3" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_background"
+        />
+    <!--<TextView
+        style="@style/menu_text_style"
+        android:text="@string/cashbak_company"
+        android:id="@+id/menu_4" /> -->
+    <!-- <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_background"
+        /> -->
+    <TextView
+        style="@style/menu_text_style"
+        android:text="@string/menu_4"
+        android:id="@+id/menu_5" />
+</LinearLayout>

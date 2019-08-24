@@ -28,6 +28,8 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,9 +51,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Hide the window title.
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -63,16 +68,24 @@ public class MainActivity extends AppCompatActivity {
         });
         setContentView(R.layout.activity_main);
         Button button = (Button) findViewById(R.id.button);
-        scanResults = (TextView) findViewById(R.id.scan_results);
+        scanResults = (TextView) findViewById(R.id.productname);
         if (savedInstanceState != null) {
             imageUri = Uri.parse(savedInstanceState.getString(SAVED_INSTANCE_URI));
-            scanResults.setText(savedInstanceState.getString(SAVED_INSTANCE_RESULT));
+            //scanResults.setText(savedInstanceState.getString(SAVED_INSTANCE_RESULT));
         }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ActivityCompat.requestPermissions(MainActivity.this, new
                         String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_PERMISSION);
+            }
+        });
+
+        Button mMenu = (Button) findViewById(R.id.bt_menu);
+        mMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, MenuPage.class));
             }
         });
     }
@@ -117,7 +130,9 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
             Bundle result = data.getExtras();
             String value = result.getString("barcode");
-            scanResults .setText(value);
+            ProductProfile profile = PrManager.getManager().getDB().getAAProfileByFSKU(getContentResolver(),value);
+
+            scanResults .setText(profile.getProductName());
         }
     }
 
@@ -130,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         if (imageUri != null) {
             outState.putString(SAVED_INSTANCE_URI, imageUri.toString());
-            outState.putString(SAVED_INSTANCE_RESULT, scanResults.getText().toString());
+            //outState.putString(SAVED_INSTANCE_RESULT, scanResults.getText().toString());
         }
         super.onSaveInstanceState(outState);
     }

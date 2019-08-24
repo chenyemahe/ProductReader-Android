@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="action_settings">Settings</string>
+
+    <string name="main_menu">Menu</string>
+    <string name="check_bar_code">Scan Code</string>
+
+    <!--Menu -->
+    <string name="menu_title">PRODUCT READER MENU</string>
+    <string name="menu_1">Products List update</string>
+    <string name="menu_2">Restock List update</string>
+    <string name="menu_3">Show Full Products</string>
+    <string name="menu_4">Show Restock List</string>
+    <string name="menu_5">Show UPC list</string>
 </resources>

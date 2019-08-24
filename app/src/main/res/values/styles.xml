@@ -14,4 +14,60 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="add_order_text_style" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:background">@color/add_key_background</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/list_margin</item>
+        <item name="android:layout_height">@dimen/tb_row_hight</item>
+    </style>
+
+    <style name="add_order_text_style_2" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:background">@color/add_key_background</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/list_margin</item>
+        <item name="android:layout_height">@dimen/tb_row_hight</item>
+    </style>
+
+    <style name="add_order_text_style_3" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:layout_height">@dimen/tb_row_hight</item>
+        <item name="android:gravity">center</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+
+    </style>
+
+    <style name="add_order_edit_text_style">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">@dimen/list_margin</item>
+        <item name="android:layout_height">@dimen/tb_row_hight</item>
+    </style>
+
+    <style name="add_button">
+        <item name="android:background">@color/button_color</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="main_order_text_style">
+        <item name="android:background">@color/add_key_background</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="menu_text_style" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:background">@color/add_key_background</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_weight">1</item>
+    </style>
 </resources>

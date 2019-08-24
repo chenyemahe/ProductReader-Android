@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="common_action_bar_splitter">#7F060000</color>
+    <color name="color_background">#232832</color>
+    <color name="add_key_background">#263554</color>
+    <color name="divid_alarm_1">#cccccc</color>
+    <color name="button_color">#00b7fc</color>
+    <color name="string_alarm">#263554</color>
 </resources>

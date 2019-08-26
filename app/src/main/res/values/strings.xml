@@ -9,7 +9,14 @@
     <string name="menu_title">PRODUCT READER MENU</string>
     <string name="menu_1">Products List update</string>
     <string name="menu_2">Restock List update</string>
-    <string name="menu_3">Show Full Products</string>
+    <string name="menu_3">Cache Full Products</string>
     <string name="menu_4">Show Restock List</string>
     <string name="menu_5">Show UPC list</string>
+
+    <!--add new upc-->
+    <string name="title_add_view">Add New UPC</string>
+    <string name="upc">UPC</string>
+    <string name="product_name">By Name</string>
+    <string name="celect_name">Celect the auto displayed name</string>
+    <string name="add">ADD</string>
 </resources>

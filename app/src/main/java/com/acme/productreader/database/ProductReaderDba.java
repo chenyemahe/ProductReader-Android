@@ -30,6 +30,9 @@ public class ProductReaderDba {
 
     private static String PROFILE_SELECTION_BY_SKU = PrProvider.ProfileColumns.ORDER_SKU + " LIKE ? ";
     private static String PROFILE_SELECTION_BY_FSKU = PrProvider.ProfileColumns.ORDER_FNSKU + " LIKE ? ";
+    private static String PROFILE_SELECTION_BY_UPC = PrProvider.ProfileColumns.ORDER_UPC + " LIKE ? ";
+    private static String PROFILE_SELECTION_BY_NAME = PrProvider.ProfileColumns.ORDER_ID + " LIKE ? ";
+
 
     public static String ID_SELECTION = BaseColumns._ID + "=?";
 
@@ -142,6 +145,69 @@ public class ProductReaderDba {
         }
 
         return profile;
+    }
+
+    public ProductProfile getAAProfileByUpc(ContentResolver cr, String upc) {
+        ProductProfile profile = null;
+        Log.d(TAG, "{getAAProfile} the FSKU is : " + upc);
+        if (upc == null)
+            return null;
+
+        Cursor cursor = null;
+
+        try {
+            cursor = cr.query(PrProvider.ProfileColumns.CONTENT_URI, null, PROFILE_SELECTION_BY_UPC,
+                    new String[]{
+                            upc
+                    }, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                profile = new ProductProfile();
+                PrUtils.fromCursor(cursor, profile);
+
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Error in retrieve Date: " + upc + e.toString());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return profile;
+    }
+
+    public List<ProductProfile> getAAProfileListByName(ContentResolver cr, String name) {
+        List<ProductProfile> profileList = null;
+        ProductProfile profile = null;
+        Log.d(TAG, "{getAAProfile} the Name is : " + name);
+        if (name == null)
+            return null;
+
+        Cursor cursor = null;
+
+        try {
+            cursor = cr.query(PrProvider.ProfileColumns.CONTENT_URI, null, PROFILE_SELECTION_BY_NAME,
+                    new String[]{
+                            name
+                    }, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                profileList = new ArrayList<ProductProfile>();
+                do {
+                    profile = new ProductProfile();
+                    PrUtils.fromCursor(cursor, profile);
+                    profileList.add(profile);
+                } while (cursor.moveToNext());
+
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Error in retrieve Date: " + name + e.toString());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return profileList;
     }
 
     public ProductProfile getAAProfileById(ContentResolver cr, String id) {

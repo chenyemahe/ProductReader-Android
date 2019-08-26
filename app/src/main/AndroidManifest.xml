@@ -33,6 +33,7 @@
 
         <activity android:name=".ScanActivity"/>
         <activity android:name=".MenuPage"/>
+        <activity android:name=".AddUpc"/>
 
        <!-- <provider
             android:name="androidx.core.content.FileProvider"

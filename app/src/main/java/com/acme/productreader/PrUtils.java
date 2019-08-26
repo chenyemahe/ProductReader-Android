@@ -9,12 +9,12 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import com.acme.productreader.database.PrProvider;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -475,144 +475,125 @@ public class PrUtils {
     public static void readExcelFileFromAssets(Activity activity, String filePath, int type) {
 
         Log.d("ye chen", "readExcelFileFromAssets");
-        InputStream stream = activity.getResources().openRawResource(R.raw.home);
-        try {
-            XSSFWorkbook workbook = new XSSFWorkbook(stream);
-            XSSFSheet sheet = workbook.getSheetAt(0);
-            int rowsCount = sheet.getPhysicalNumberOfRows();
-            FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
-            for (int r = 0; r<rowsCount; r++) {
-                Row row = sheet.getRow(r);
-                int cellsCount = row.getPhysicalNumberOfCells();
-                String[] value = new String[6];
-                for (int c = 0; c<6; c++) {
-                    value[c] = getCellAsString(row, c, formulaEvaluator);
-                }
-                if(type == MenuPage.PICKFILE_RESULT_CODE_1) {
-                    ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(),value[0]);
-                    if (profile == null) {
-                        profile = setProfile(value, "home");
-                        PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
-                    } else {
-                        PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
-                    }
-                }
-            }
-            /*
-            // Create a POI File System object
-            POIFSFileSystem myFileSystem = new POIFSFileSystem(myInput);
-            // Create a workbook using the File System
-            HSSFWorkbook myWorkBook = new HSSFWorkbook(myFileSystem);
-            // Get the first sheet from workbook
-            HSSFSheet mySheet = myWorkBook.getSheetAt(0);
-            // We now need something to iterate through the cells.
-            Iterator<Row> rowIter = mySheet.rowIterator();
-            int rowno = 0;
-            while (rowIter.hasNext()) {
-                HSSFRow myRow = (HSSFRow) rowIter.next();
-                if (rowno != 0) {
-                    Iterator<Cell> cellIter = myRow.cellIterator();
-                    int totalRom = myRow.getPhysicalNumberOfCells();
-                    int colno = 0;
-                    String[] value = new String[6];
-                    Log.d("ye chen", value.toString());
-                    while (cellIter.hasNext()) {
-                        HSSFCell myCell = (HSSFCell) cellIter.next();
-                        value[colno] = myCell.toString();
-                        colno++;
-                    }
-                    if(type == MenuPage.PICKFILE_RESULT_CODE_1) {
-                        ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(),value[0]);
-                        if (profile == null) {
-                            profile = setProfile(value);
-                            PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
-                        } else {
-                            PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
+        int result = 0;
+        final Context context = activity.getApplicationContext();
+        switch (type) {
+            case MenuPage.PICKFILE_RESULT_CODE_1:
+                result = readAndUpdate(activity, type, R.raw.acme, 6, PrConstant.store1);
+                if (result != -1)
+                    activity.runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(context, "Product List for " + PrConstant.store1 + " updating done!", Toast.LENGTH_LONG).show();
                         }
-                    }
-                }
-                rowno++;
-            }*/
-        } catch (Exception e) {
-            Log.e("ye chen", "error " + e.toString());
-        }
+                    });
 
-        stream = activity.getResources().openRawResource(R.raw.acme);
-        try {
-            XSSFWorkbook workbook = new XSSFWorkbook(stream);
-            XSSFSheet sheet = workbook.getSheetAt(0);
-            int rowsCount = sheet.getPhysicalNumberOfRows();
-            FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
-            for (int r = 0; r<rowsCount; r++) {
-                Row row = sheet.getRow(r);
-                int cellsCount = row.getPhysicalNumberOfCells();
-                String[] value = new String[6];
-                for (int c = 0; c<6; c++) {
-                    value[c] = getCellAsString(row, c, formulaEvaluator);
-                }
-                if(type == MenuPage.PICKFILE_RESULT_CODE_1) {
-                    ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(),value[0]);
-                    if (profile == null) {
-                        profile = setProfile(value, "acme");
-                        PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
-                    } else {
-                        PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
-                    }
-                }
-            }
-            /*
-            // Create a POI File System object
-            POIFSFileSystem myFileSystem = new POIFSFileSystem(myInput);
-            // Create a workbook using the File System
-            HSSFWorkbook myWorkBook = new HSSFWorkbook(myFileSystem);
-            // Get the first sheet from workbook
-            HSSFSheet mySheet = myWorkBook.getSheetAt(0);
-            // We now need something to iterate through the cells.
-            Iterator<Row> rowIter = mySheet.rowIterator();
-            int rowno = 0;
-            while (rowIter.hasNext()) {
-                HSSFRow myRow = (HSSFRow) rowIter.next();
-                if (rowno != 0) {
-                    Iterator<Cell> cellIter = myRow.cellIterator();
-                    int totalRom = myRow.getPhysicalNumberOfCells();
-                    int colno = 0;
-                    String[] value = new String[6];
-                    Log.d("ye chen", value.toString());
-                    while (cellIter.hasNext()) {
-                        HSSFCell myCell = (HSSFCell) cellIter.next();
-                        value[colno] = myCell.toString();
-                        colno++;
-                    }
-                    if(type == MenuPage.PICKFILE_RESULT_CODE_1) {
-                        ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(),value[0]);
-                        if (profile == null) {
-                            profile = setProfile(value);
-                            PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
-                        } else {
-                            PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
+                result = readAndUpdate(activity, type, R.raw.home, 6, PrConstant.store2);
+                if (result != -1)
+                    activity.runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(context, "Product List for " + PrConstant.store2 + " updating done!", Toast.LENGTH_LONG).show();
                         }
-                    }
-                }
-                rowno++;
-            }*/
-        } catch (Exception e) {
-            Log.e("ye chen", "error " + e.toString());
+                    });
+                break;
+
+            case MenuPage.PICKFILE_RESULT_CODE_2:
+                result = readAndUpdate(activity, type, R.raw.restock_acme, 5, null);
+                if (result != -1)
+                    activity.runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(context, "Restock List for " + PrConstant.store1 + " updating done!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                result = readAndUpdate(activity, type, R.raw.restock_home, 5, null);
+                if (result != -1)
+                    activity.runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(context, "Restock List for " + PrConstant.store2 + " updating done!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                break;
+            default:
+                break;
         }
     }
 
-    public static ProductProfile setProfile(String[] value, String filename) {
-        ProductProfile p = new ProductProfile();
-        p.setSKU(value[0]);
+    /**
+     *
+     * @param activity context
+     * @param type result code
+     * @param resourceId raw file name
+     * @param totalRow max row items
+     * @param storeName store name
+     * @return
+     */
+    public static int readAndUpdate(Activity activity, int type, int resourceId, int totalRow, String storeName) {
+        int result = 0;
+        InputStream stream = activity.getResources().openRawResource(resourceId);
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(stream);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            int rowsCount = sheet.getPhysicalNumberOfRows();
+            FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
+            for (int r = 0; r<rowsCount; r++) {
+                Row row = sheet.getRow(r);
+                //int cellsCount = row.getPhysicalNumberOfCells();
+                String[] value = new String[totalRow];
+                for (int c = 0; c<totalRow; c++) {
+                        value[c] = getCellAsString(row, c, formulaEvaluator);
+                }
+                if(type == MenuPage.PICKFILE_RESULT_CODE_1) {
+                    ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(), removeMark(value[0], " "));
+                    if (profile == null) {
+                        setProfileForProduct(profile, value, storeName);
+                        PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
+                        Log.e("ye chen", "not in db ");
+                    } else {
+                        setProfileForProduct(profile, value, storeName);
+                        PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
+                    }
+                } else if (type == MenuPage.PICKFILE_RESULT_CODE_2) {
+                    ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(), removeMark(value[1], " "));
+                    if (profile == null) {
+                        setProfileForRestock(profile, value);
+                        PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
+                        Log.e("ye chen", "not in db ");
+                    } else {
+                        setProfileForRestock(profile, value);
+                        PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("ye chen", "error " + e.toString());
+            result = -1;
+        }
+        return result;
+    }
+
+    public static ProductProfile setProfileForProduct(ProductProfile p, String[] value, String filename) {
+        if (p == null)
+            p = new ProductProfile();
+        p.setSKU(removeMark(value[0]," "));
         p.setProductName(value[1]);
-        p.setASIN(value[2]);
-        p.setFNSKU(value[3]);
+        p.setASIN(removeMark(value[2]," "));
+        p.setFNSKU(removeMark(value[3]," "));
         p.setPrice(value[4]);
         p.setAmazonFee(value[5]);
-        if(TextUtils.equals(filename,"acme"))
-            p.setTotalAdd("acme");
-        else if(TextUtils.equals(filename, "home"))
-            p.setTotalAdd("home");
-        Log.d("ye chen", p.toString());
+        if(TextUtils.equals(filename,PrConstant.store1))
+            p.setTotalAdd(PrConstant.store1);
+        else if(TextUtils.equals(filename, PrConstant.store2))
+            p.setTotalAdd(PrConstant.store2);
+        return p;
+    }
+
+    public static ProductProfile setProfileForRestock(ProductProfile p, String[] value) {
+        if (p == null)
+            p = new ProductProfile();
+        p.setProductName(value[0]);
+        p.setSKU(removeMark(value[1], " "));
+        p.setCurrentQN(removeMark(value[3], " "));
+        p.setRequestNumber(removeMark(value[4], " "));
         return p;
     }
 
@@ -646,5 +627,19 @@ public class PrUtils {
             Log.e("ye chen", "error " + e.toString());
         }
         return value;
+    }
+
+    public static void updateProductName(Activity activity, String type) {
+        final Context context = activity.getApplicationContext();
+        ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAllProfile(activity.getContentResolver());
+        for(ProductProfile p : fullList) {
+            saveCustomKeyword(activity, p.getProductName(), type);
+            Log.e("ye chen", "updateProductName " + p.getProductName());
+        }
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(context, "Restock List for " + PrConstant.store2 + " updating done!", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

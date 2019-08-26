@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/title_add_view"
+        android:textColor="@android:color/white"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:scrollbars="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white">
+
+            <TableLayout
+                android:id="@+id/tl_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1">
+
+                <TableRow>
+                    <TextView
+                        android:id="@+id/tv_upc"
+                        android:layout_width="wrap_content"
+                        style="@style/add_order_text_style"
+                        android:text="@string/upc"/>
+
+                    <TextView
+                        android:id="@+id/tv_upc_n"
+                        android:layout_width="0dp"
+                        style="@style/add_order_edit_text_style"
+                        android:layout_weight="1"
+                        android:scrollHorizontally="true" />
+                </TableRow>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divid_alarm_1" />
+
+                <TableRow>
+
+                    <TextView
+                        android:id="@+id/tv_product"
+                        android:layout_width="wrap_content"
+                        android:text="@string/product_name"
+                        style="@style/add_order_text_style" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/ed_product_name"
+                        android:layout_width="0dp"
+                        style="@style/add_order_edit_text_style"
+                        android:layout_weight="1"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPostalAddress"
+                        android:scrollHorizontally="true"
+                        android:hint="@string/celect_name"/>
+                        <requestFocus/>
+                </TableRow>
+            </TableLayout>
+        </FrameLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_background"
+        />
+    <TextView
+        style="@style/menu_text_style"
+        android:text="@string/add"
+        android:id="@+id/add" />
+</LinearLayout>

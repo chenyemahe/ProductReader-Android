@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 
@@ -124,9 +127,22 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
             Bundle result = data.getExtras();
             String value = result.getString("barcode");
-            ProductProfile profile = PrManager.getManager().getDB().getAAProfileByFSKU(getContentResolver(),value+" ");
-            if(profile != null)
-                scanResults .setText(profile.getProductName());
+            String type = result.getString("type");
+            if (TextUtils.equals(type, PrConstant.type_fsku)) {
+                ProductProfile profile = PrManager.getManager().getDB().getAAProfileByFSKU(getContentResolver(),value);
+                if(profile != null)
+                    scanResults .setText(profile.getProductName());
+            }
+            if (TextUtils.equals(type, PrConstant.type_upc)) {
+                ProductProfile profile = PrManager.getManager().getDB().getAAProfileByUpc(getContentResolver(),value);
+                if(profile != null)
+                    scanResults .setText(profile.getProductName());
+                else {
+                    Intent intent = new Intent(this,AddUpc.class);
+                    intent.putExtra(PrConstant.type_upc,value);
+                    startActivity(intent);
+                }
+            }
         }
     }
 

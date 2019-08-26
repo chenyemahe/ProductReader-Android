@@ -225,6 +225,7 @@ public class ScanActivity extends AppCompatActivity implements Camera.PreviewCal
                                 case Barcode.PRODUCT:
                                     Log.i(LOG_TAG, code.rawValue);
                                     bundle.putString("barcode", code.rawValue);
+                                    bundle.putString("type", PrConstant.type_upc);
                                     break;
                                 case Barcode.SMS:
                                     Log.i(LOG_TAG, code.sms.message);
@@ -233,6 +234,7 @@ public class ScanActivity extends AppCompatActivity implements Camera.PreviewCal
                                 case Barcode.TEXT:
                                     Log.i(LOG_TAG, code.rawValue);
                                     bundle.putString("barcode", code.rawValue);
+                                    bundle.putString("type", PrConstant.type_fsku);
                                     break;
                                 case Barcode.URL:
                                     Log.i(LOG_TAG, "url: " + code.url.url);

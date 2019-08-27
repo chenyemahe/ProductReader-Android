@@ -7,13 +7,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 
+import androidx.core.content.FileProvider;
+
 import com.acme.productreader.database.PrProvider;
 
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
@@ -21,8 +27,13 @@ import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.commons.csv.CSVFormat;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,6 +41,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class PrUtils {
@@ -327,6 +339,36 @@ public class PrUtils {
         return prefs.getString(type_key, "");
     }
 
+    public static boolean saveUpcCount(Context context, String keywords, String type_key) {
+        SharedPreferences prefs = context.getSharedPreferences(CASHBACK_PREFS, 0);
+        String newList = getCustomKeywordList(context, type_key);
+        if (TextUtils.isEmpty(newList)) {
+            keywords = keywords + ";" + "1";
+            newList = keywords;
+        } else {
+            if(!newList.contains(keywords)) {
+                newList = newList + "," + keywords + ";" + "1";
+                Log.d(context.getClass().toString(), "keyword update save checked keywords: " + keywords);
+            } else {
+                String ammend = null;
+                String[] list = newList.split(",");
+                for(int i =0; i < list.length; i++) {
+                    String[] upc = list[i].split(";");
+                    if(upc.length == 2 && TextUtils.equals(upc[0], keywords)) {
+                        int count = Integer.valueOf(upc[1]) + 1;
+                        list[i] = upc[0] + ";" + String.valueOf(count);
+                    }
+                    if(ammend == null)
+                        ammend = list[i];
+                    else if(list[i] != null)
+                        ammend = ammend + "," + list[i];
+                }
+                return prefs.edit().putString(type_key, ammend).commit();
+            }
+        }
+        return prefs.edit().putString(type_key, newList).commit();
+    }
+
     public static boolean removeCustomKeyword(Context context,String s, String type_key) {
         SharedPreferences prefs = context.getSharedPreferences(CASHBACK_PREFS, 0);
         String oldList = getCustomKeywordList(context, type_key);
@@ -349,6 +391,11 @@ public class PrUtils {
         }
         Log.d(context.getClass().toString(), "keyword remove save checked keywords: " +  s);
         return prefs.edit().putString(type_key, newList).commit();
+    }
+
+    public static boolean clearCustomPrefs(Context context, String type_key) {
+        SharedPreferences prefs = context.getSharedPreferences(CASHBACK_PREFS, 0);
+        return prefs.edit().putString(type_key, "").commit();
     }
 
     public static boolean isLess100(String value) {
@@ -545,7 +592,7 @@ public class PrUtils {
                 if(type == MenuPage.PICKFILE_RESULT_CODE_1) {
                     ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(), removeMark(value[0], " "));
                     if (profile == null) {
-                        setProfileForProduct(profile, value, storeName);
+                        profile = setProfileForProduct(profile, value, storeName);
                         PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
                         Log.e("ye chen", "not in db ");
                     } else {
@@ -553,14 +600,16 @@ public class PrUtils {
                         PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
                     }
                 } else if (type == MenuPage.PICKFILE_RESULT_CODE_2) {
-                    ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(), removeMark(value[1], " "));
+                    String sku = removeMark(value[1], " ");
+                    ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(), sku);
                     if (profile == null) {
-                        setProfileForRestock(profile, value);
+                        profile = setProfileForRestock(profile, value);
                         PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
                         Log.e("ye chen", "not in db ");
                     } else {
                         setProfileForRestock(profile, value);
                         PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
+                        Log.e("ye chen", profile.getRequestNm());
                     }
                 }
             }
@@ -590,8 +639,9 @@ public class PrUtils {
     public static ProductProfile setProfileForRestock(ProductProfile p, String[] value) {
         if (p == null)
             p = new ProductProfile();
+        String sku = removeMark(value[1], " ");
         p.setProductName(value[0]);
-        p.setSKU(removeMark(value[1], " "));
+        p.setSKU(sku);
         p.setCurrentQN(removeMark(value[3], " "));
         p.setRequestNumber(removeMark(value[4], " "));
         return p;
@@ -641,5 +691,140 @@ public class PrUtils {
                 Toast.makeText(context, "Restock List for " + PrConstant.store2 + " updating done!", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public static String chooseStore(String asin, String upc, Activity activity) {
+        int store_a = 0;
+        int store_b = 0;
+        ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByAsin(activity.getContentResolver(),removeMark(asin," "));
+        for(ProductProfile p : fullList) {
+            if(TextUtils.equals(PrConstant.store1,p.getTotalAdd())) {
+                String s = p.getRequestNm();
+                store_a += Float.valueOf(s);
+            }
+            if(TextUtils.equals(PrConstant.store2,p.getTotalAdd()))
+                store_b += Float.valueOf(p.getRequestNm());
+        }
+        int currentUpc = getUpcCount(activity, upc);
+        int value1 = store_a - currentUpc/2;
+        int value2 = store_b - currentUpc/2;
+        Log.d("ye chen", "Store a count: " + store_a + " Store b count: " + store_b);
+        if(value1 > value2)
+            return PrConstant.store1;
+        else
+            return PrConstant.store2;
+    }
+
+    public static int getUpcCount(Context context, String upc) {
+        SharedPreferences prefs = context.getSharedPreferences(CASHBACK_PREFS, 0);
+        String newList = getCustomKeywordList(context, PrConstant.shared_upc_total);
+        if (TextUtils.isEmpty(newList)) {
+            return 0;
+        } else {
+            if(!newList.contains(upc)) {
+                return 0;
+            } else {
+                String[] list = newList.split(",");
+                for(int i =0; i < list.length; i++) {
+                    String[] list2 = list[i].split(";");
+                    if(list2.length == 2 && TextUtils.equals(list2[0], upc)) {
+                        return Integer.valueOf(list2[1]);
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public static List<String[]> getUpcList(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(CASHBACK_PREFS, 0);
+        String newList = getCustomKeywordList(context, PrConstant.shared_upc_total);
+        ArrayList<String[]> result = new ArrayList<String[]>();
+        if (TextUtils.isEmpty(newList)) {
+            return result;
+        } else {
+                String[] list = newList.split(",");
+                for(int i =0; i < list.length; i++) {
+                    String[] list2 = list[i].split(";");
+                    if(list2.length == 2) {
+                        result.add(list2);
+                    }
+                }
+        }
+        return result;
+    }
+
+    public static void generateCsv(Activity context) throws IOException {
+
+        File csvFile;
+        final String NEW_LINE_SEPARATOR = "\n";
+
+        //CSV file header
+        final Object [] FILE_HEADER = {"Product Name", "ASIN", "UPC", "SKU", "Quantity", "Store","Total Scanned"};
+        String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+        String fileName = "report_amazon.csv";
+        String filePath = baseDir + File.separator + Environment.DIRECTORY_DOWNLOADS + File.separator + fileName;
+        csvFile = new File(filePath);
+        CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator(NEW_LINE_SEPARATOR);
+
+        FileWriter fileWriter = null;
+
+        CSVPrinter csvFilePrinter = null;
+
+        try {
+
+            fileWriter = new FileWriter(filePath);
+            csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
+
+            BigDecimal netAmount = BigDecimal.ZERO;
+            BigDecimal refundAmount = BigDecimal.ZERO;
+
+            //Create CSV file header
+            csvFilePrinter.printRecord(FILE_HEADER);
+
+            List<String[]> mobileOrderList = getUpcList(context);
+
+            for (String[] mobileOrder : mobileOrderList) {
+                ProductProfile keyProfile = PrManager.getManager().getDB().getAAProfileByUpc(context.getContentResolver(),mobileOrder[0]);
+                ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByAsin(context.getContentResolver(),removeMark(keyProfile.getASIN()," "));
+                for(ProductProfile p : fullList) {
+                    ArrayList<String> lineItemDataRecord = new ArrayList<>();
+                    lineItemDataRecord.add(p.getProductName());
+                    lineItemDataRecord.add(p.getASIN());
+                    lineItemDataRecord.add(p.getUPC());
+                    lineItemDataRecord.add(p.getSKU());
+                    lineItemDataRecord.add(p.getRequestNm());
+                    lineItemDataRecord.add(p.getTotalAdd());
+                    lineItemDataRecord.add(mobileOrder[1]);
+                    csvFilePrinter.printRecord(lineItemDataRecord);
+                }
+
+            }
+        } catch (Exception e) {
+            Log.e("ye chen", "Error in CsvFileWriter!!!", e);
+        } finally {
+            try {
+                fileWriter.flush();
+                fileWriter.close();
+                csvFilePrinter.close();
+            } catch (IOException e) {
+                Log.e("ye chen", "Error while flushing/closing fileWriter/csvPrinter!!!", e);
+            }
+        }
+            String subject = "补货单";
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("plain/text");
+            // ye.chen@egov.com
+            // use File Provider for API 24+
+          //  if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(csvFile));
+           // } else {
+                //intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(context.getApplicationContext(), context.getApplicationContext().getPackageName() + ".provider", csvFile));
+               // intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+               // Log.d("generateCsv:  ", FileProvider.getUriForFile(context.getApplicationContext(), context.getApplicationContext().getPackageName() + ".provider", csvFile).toString());
+            //}
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            context.startActivityForResult(Intent.createChooser(intent, "E-mail"), 1);
+
     }
 }

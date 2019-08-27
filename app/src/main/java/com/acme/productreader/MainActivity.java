@@ -33,6 +33,7 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_WRITE_PERMISSION = 20;
     private static final String SAVED_INSTANCE_URI = "uri";
     private static final String SAVED_INSTANCE_RESULT = "result";
+    private TextView upcCount;
+    private TextView store;
 
 
     @Override
@@ -66,8 +69,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button button = (Button) findViewById(R.id.button);
         scanResults = (TextView) findViewById(R.id.productname);
+        upcCount = findViewById(R.id.upccount);
+        store = findViewById(R.id.store);
         if (savedInstanceState != null) {
-            imageUri = Uri.parse(savedInstanceState.getString(SAVED_INSTANCE_URI));
+            //imageUri = Uri.parse(savedInstanceState.getString(SAVED_INSTANCE_URI));
             //scanResults.setText(savedInstanceState.getString(SAVED_INSTANCE_RESULT));
         }
         button.setOnClickListener(new View.OnClickListener() {
@@ -135,8 +140,28 @@ public class MainActivity extends AppCompatActivity {
             }
             if (TextUtils.equals(type, PrConstant.type_upc)) {
                 ProductProfile profile = PrManager.getManager().getDB().getAAProfileByUpc(getContentResolver(),value);
-                if(profile != null)
-                    scanResults .setText(profile.getProductName());
+                if(profile != null) {
+                    scanResults.setText(profile.getProductName());
+                    PrUtils.saveUpcCount(this,value,PrConstant.shared_upc_total);
+                    int store_a = 0;
+                    int store_b = 0;
+                    upcCount.setText("Current UPC count : "+ PrUtils.getCustomKeywordList(this,PrConstant.shared_upc_total));
+                    ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByAsin(getContentResolver(),PrUtils.removeMark(profile.getASIN()," "));
+                    for(ProductProfile p : fullList) {
+                        if(TextUtils.equals(PrConstant.store1,p.getTotalAdd())) {
+                            String s = p.getRequestNm();
+                            if (s != null)
+                                store_a += Float.valueOf(s);
+                        }
+                        if(TextUtils.equals(PrConstant.store2,p.getTotalAdd())) {
+                            String s = p.getRequestNm();
+                            if (s != null)
+                                store_b += Float.valueOf(s);
+                        }
+                    }
+                    store.setText(PrConstant.store1 + " : " + store_a + "     " + PrConstant.store2 + " : " + store_b);
+                    //store.setText(PrUtils.chooseStore(profile.getASIN(),profile.getUPC(),this));
+                }
                 else {
                     Intent intent = new Intent(this,AddUpc.class);
                     intent.putExtra(PrConstant.type_upc,value);
@@ -181,5 +206,11 @@ public class MainActivity extends AppCompatActivity {
 
         return BitmapFactory.decodeStream(ctx.getContentResolver()
                 .openInputStream(uri), null, bmOptions);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        upcCount.setText("Current UPC count : "+ PrUtils.getCustomKeywordList(this,PrConstant.shared_upc_total));
     }
 }

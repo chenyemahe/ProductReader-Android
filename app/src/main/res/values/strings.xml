@@ -10,8 +10,8 @@
     <string name="menu_1">Products List update</string>
     <string name="menu_2">Restock List update</string>
     <string name="menu_3">Cache Full Products</string>
-    <string name="menu_4">Show Restock List</string>
-    <string name="menu_5">Show UPC list</string>
+    <string name="menu_4">Clear Cached UPC list</string>
+    <string name="menu_5">Submit</string>
 
     <!--add new upc-->
     <string name="title_add_view">Add New UPC</string>

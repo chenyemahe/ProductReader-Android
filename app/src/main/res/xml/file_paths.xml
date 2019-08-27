@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ye.chen@egov.com Added for support File provider API 2+ -->
+<paths>
+    <external-path name="Download" path="Download/"  />
+</paths>

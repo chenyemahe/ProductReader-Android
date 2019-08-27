@@ -37,17 +37,17 @@
         android:layout_height="1dp"
         android:background="@color/color_background"
         />
-    <!--<TextView
-        style="@style/menu_text_style"
-        android:text="@string/cashbak_company"
-        android:id="@+id/menu_4" /> -->
-    <!-- <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_background"
-        /> -->
     <TextView
         style="@style/menu_text_style"
         android:text="@string/menu_4"
+        android:id="@+id/menu_4" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_background"
+        />
+    <TextView
+        style="@style/menu_text_style"
+        android:text="@string/menu_5"
         android:id="@+id/menu_5" />
 </LinearLayout>

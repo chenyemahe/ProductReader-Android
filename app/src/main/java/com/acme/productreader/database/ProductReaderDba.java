@@ -32,6 +32,7 @@ public class ProductReaderDba {
     private static String PROFILE_SELECTION_BY_FSKU = PrProvider.ProfileColumns.ORDER_FNSKU + " LIKE ? ";
     private static String PROFILE_SELECTION_BY_UPC = PrProvider.ProfileColumns.ORDER_UPC + " LIKE ? ";
     private static String PROFILE_SELECTION_BY_NAME = PrProvider.ProfileColumns.ORDER_ID + " LIKE ? ";
+    private static String PROFILE_SELECTION_BY_ASIN = PrProvider.ProfileColumns.ORDER_ASIN + " LIKE ? ";
 
 
     public static String ID_SELECTION = BaseColumns._ID + "=?";
@@ -117,6 +118,34 @@ public class ProductReaderDba {
         return profile;
     }
 
+    public ProductProfile getAAProfileByAsin(ContentResolver cr, String asin) {
+        ProductProfile profile = null;
+        Log.d(TAG, "{getAAProfile} the SKU is : " + asin);
+        if (asin == null)
+            return null;
+
+        Cursor cursor = null;
+
+        try {
+            cursor = cr.query(PrProvider.ProfileColumns.CONTENT_URI, null, PROFILE_SELECTION_BY_ASIN,
+                    new String[]{
+                            asin
+                    }, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                profile = new ProductProfile();
+                PrUtils.fromCursor(cursor, profile);
+
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Error in retrieve Date: " + asin + e.toString());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return profile;
+    }
 
     public ProductProfile getAAProfileByFSKU(ContentResolver cr, String fsku) {
         ProductProfile profile = null;
@@ -201,6 +230,40 @@ public class ProductReaderDba {
             }
         } catch (SQLException e) {
             Log.e(TAG, "Error in retrieve Date: " + name + e.toString());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return profileList;
+    }
+
+    public List<ProductProfile> getAAProfileListByAsin(ContentResolver cr, String asin) {
+        List<ProductProfile> profileList = null;
+        ProductProfile profile = null;
+        Log.d(TAG, "{getAAProfile} the asin is : " + asin);
+        if (asin == null)
+            return null;
+
+        Cursor cursor = null;
+
+        try {
+            cursor = cr.query(PrProvider.ProfileColumns.CONTENT_URI, null, PROFILE_SELECTION_BY_ASIN,
+                    new String[]{
+                            asin
+                    }, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                profileList = new ArrayList<ProductProfile>();
+                do {
+                    profile = new ProductProfile();
+                    PrUtils.fromCursor(cursor, profile);
+                    profileList.add(profile);
+                } while (cursor.moveToNext());
+
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Error in retrieve Date: " + asin + e.toString());
         } finally {
             if (cursor != null) {
                 cursor.close();

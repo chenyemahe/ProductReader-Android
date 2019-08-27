@@ -30,6 +30,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.android.gms:play-services-vision:11.4.0'
     implementation 'com.android.support:multidex:1.0.3'
+    compile "org.apache.commons:commons-csv:1.5"
 }
 
 buildscript {

@@ -56,8 +56,7 @@
             android:layout_below="@+id/button_ly"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:orientation="vertical">
 <!--
             <Spinner
                 android:id="@+id/spinner_1"
@@ -75,11 +74,27 @@
                 android:gravity="end" />-->
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="500dp"
-                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_margin"
                 android:gravity="center"
-                android:textSize="30dp"
+                android:textSize="15dp"
                 android:id="@+id/productname"/>
+
+            <TextView
+                android:id="@+id/store"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_margin"
+                android:gravity="center"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/upccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_margin"
+                android:gravity="center"
+                android:textSize="15dp" />
         </LinearLayout>
 
         <ExpandableListView

@@ -19,6 +19,8 @@ public class MenuPage extends Activity implements View.OnClickListener{
     private TextView productList;
     private TextView restockList;
     private TextView uploadPName;
+    private TextView clearUpcCount;
+    private TextView submit;
     public static final int PICKFILE_RESULT_CODE_1 = 1;
     public static final int PICKFILE_RESULT_CODE_2 = 2;
     private Uri fileUri;
@@ -36,6 +38,12 @@ public class MenuPage extends Activity implements View.OnClickListener{
 
         uploadPName = findViewById(R.id.menu_3);
         uploadPName.setOnClickListener(this);
+
+        clearUpcCount = findViewById(R.id.menu_4);
+        clearUpcCount.setOnClickListener(this);
+
+        submit = findViewById(R.id.menu_5);
+        submit.setOnClickListener(this);
     }
 
 
@@ -56,13 +64,25 @@ public class MenuPage extends Activity implements View.OnClickListener{
                         PrUtils.readExcelFileFromAssets(MenuPage.this, filePath, PICKFILE_RESULT_CODE_2);
                     }
                 }.start();
-
+                break;
             case R.id.menu_3:
                 new Thread() {
                     public void run(){
                         PrUtils.updateProductName(MenuPage.this, PrConstant.shared_product_name);
                     }
                 }.start();
+                break;
+            case R.id.menu_4:
+                PrUtils.clearCustomPrefs(MenuPage.this, PrConstant.shared_upc_total);
+                break;
+            case R.id.menu_5:
+                try{
+                    PrUtils.generateCsv(MenuPage.this);
+                    //PrUtils.clearCustomPrefs(MenuPage.this, PrConstant.shared_upc_total);
+                }catch (Exception e) {
+                    Log.e("ye chen" , e.getMessage());
+                }
+                break;
             default:
                 break;
         }

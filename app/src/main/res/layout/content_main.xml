@@ -107,5 +107,17 @@
             android:background="@color/color_background"
             android:groupIndicator="@drawable/expend_indicator"/>
 
+        <Button
+            android:id="@+id/bt_submit"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/main_title_hight"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:text="@string/menu_5"
+            android:textColor="@android:color/white"
+            android:background="@color/color_background" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

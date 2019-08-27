@@ -1,15 +1,12 @@
 package com.acme.productreader;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
-
-import com.acme.productreader.R;
+import android.widget.Toast;
 
 /**
  * Created by ye1.chen on 4/19/16.
@@ -73,35 +70,19 @@ public class MenuPage extends Activity implements View.OnClickListener{
                 }.start();
                 break;
             case R.id.menu_4:
-                PrUtils.clearCustomPrefs(MenuPage.this, PrConstant.shared_upc_total);
+                PrUtils.clearCustomPrefs(MenuPage.this, PrConstant.shared_upc_total_store1);
+                PrUtils.clearCustomPrefs(MenuPage.this, PrConstant.shared_upc_total_store2);
+                PrUtils.clearCustomPrefs(MenuPage.this, PrConstant.shared_product_name);
+                Toast.makeText(this,"All Product name and upc cleared!", Toast.LENGTH_LONG).show();
                 break;
             case R.id.menu_5:
                 try{
-                    PrUtils.generateCsv(MenuPage.this);
-                    //PrUtils.clearCustomPrefs(MenuPage.this, PrConstant.shared_upc_total);
+                    PrUtils.generateCsvFullDB(MenuPage.this);
                 }catch (Exception e) {
                     Log.e("ye chen" , e.getMessage());
                 }
                 break;
             default:
-                break;
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("ye chen", String.valueOf(requestCode) + "  " + String.valueOf(resultCode));
-        switch (requestCode) {
-            case PICKFILE_RESULT_CODE_1:
-                if (resultCode == -1) {
-                    fileUri = data.getData();
-                    filePath = fileUri.getPath();
-                    new Thread() {
-                        public void run(){
-                            PrUtils.readExcelFileFromAssets(MenuPage.this, filePath, PICKFILE_RESULT_CODE_1);
-                        }
-                    }.start();
-                }
                 break;
         }
     }

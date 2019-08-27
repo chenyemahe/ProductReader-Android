@@ -46,19 +46,26 @@ public class AddUpc extends Activity implements View.OnClickListener{
     }
 
     private String[] getStringArray() {
-        return PrUtils.getCustomKeywordList(this, PrConstant.shared_product_name).split(",");
+        return PrUtils.getCustomKeywordList(this, PrConstant.shared_product_name).split("@");
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.add :
-                ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByName(this.getContentResolver(), mProductName.getText().toString());
-                for(ProductProfile p : fullList) {
-                    p.setUPC(upcnumber);
-                    PrManager.getManager().getDB().updateAAProfile(getContentResolver(), p);
+                String pName = mProductName.getText().toString();
+                ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByName(this.getContentResolver(), pName);
+                if(fullList != null) {
+                    for(ProductProfile p : fullList) {
+                        if(p == null)
+                            continue;
+                        p.setUPC(upcnumber);
+                        PrManager.getManager().getDB().updateAAProfile(getContentResolver(), p);
+                    }
+                    this.finish();
+                } else {
+                    Toast.makeText(this,"Saving fail!", Toast.LENGTH_LONG).show();
                 }
-                this.finish();
         }
     }
 }

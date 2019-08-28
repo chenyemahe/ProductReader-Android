@@ -72,7 +72,7 @@ public class MenuPage extends Activity implements View.OnClickListener{
             case R.id.menu_4:
                 PrUtils.clearCustomPrefs(MenuPage.this, PrConstant.shared_upc_total_store1);
                 PrUtils.clearCustomPrefs(MenuPage.this, PrConstant.shared_upc_total_store2);
-                PrUtils.clearCustomPrefs(MenuPage.this, PrConstant.shared_product_name);
+                //PrUtils.clearCustomPrefs(MenuPage.this, PrConstant.shared_product_name);
                 Toast.makeText(this,"All Product name and upc cleared!", Toast.LENGTH_LONG).show();
                 break;
             case R.id.menu_5:

@@ -1,7 +1,10 @@
 package com.acme.productreader;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -72,8 +75,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     PrUtils.generateCsvForReport(MainActivity.this);
-                    PrUtils.clearCustomPrefs(MainActivity.this, PrConstant.shared_upc_total_store1);
-                    PrUtils.clearCustomPrefs(MainActivity.this, PrConstant.shared_upc_total_store2);
                 } catch (Exception e) {
                     Log.e("ye chen" , e.toString());
                 }
@@ -171,6 +172,21 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
+        } else if(requestCode == 3){
+            Dialog a =  new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Reduce restock items since submitted？")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            PrUtils.reduceShippedItem(MainActivity.this);
+                        }
+                    })
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
     }
 

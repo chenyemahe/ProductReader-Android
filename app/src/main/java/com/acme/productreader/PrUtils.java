@@ -120,7 +120,7 @@ public class PrUtils {
 
     /**
      * Sort order profile list by date
-     * 
+     *
      * @param profileList
      * @return ArrayList by key year and month for sorted list
      */
@@ -166,7 +166,7 @@ public class PrUtils {
                 indexYear = findStElemInArray(yearList, year);
             }
 
-            ArrayList<ProductProfile> list = sortListMap.get(indexYear).get(indexMonth-1);
+            ArrayList<ProductProfile> list = sortListMap.get(indexYear).get(indexMonth - 1);
             for (int i = 0; i <= list.size(); i++) {
                 if (i == list.size()) {
                     list.add(profile);
@@ -208,7 +208,7 @@ public class PrUtils {
             } else {
                 return null;
             }
-            if(TextUtils.isEmpty(keySort)) {
+            if (TextUtils.isEmpty(keySort)) {
                 keySort = "Default";
             }
             String[] mdate = profile.getDate().split("/");
@@ -231,7 +231,7 @@ public class PrUtils {
                 indexStoreList = findStElemInArray(storeList, keySort);
             }
 
-            ArrayList<ProductProfile> list = sortListMap.get(indexStoreList).get(indexMonth-1);
+            ArrayList<ProductProfile> list = sortListMap.get(indexStoreList).get(indexMonth - 1);
             for (int i = 0; i <= list.size(); i++) {
                 if (i == list.size()) {
                     list.add(profile);
@@ -260,7 +260,7 @@ public class PrUtils {
 
     /**
      * Parse Set to ArrayList
-     * 
+     *
      * @param set
      * @return ArrayList
      */
@@ -322,7 +322,7 @@ public class PrUtils {
         if (TextUtils.isEmpty(newList)) {
             newList = keywords;
         } else {
-            if(!newList.contains(keywords)) {
+            if (!newList.contains(keywords)) {
                 newList = newList + "@" + keywords;
                 Log.d(context.getClass().toString(), "keyword update save checked keywords: " + keywords);
             }
@@ -342,21 +342,21 @@ public class PrUtils {
             keywords = keywords + ";" + "1";
             newList = keywords;
         } else {
-            if(!newList.contains(keywords)) {
+            if (!newList.contains(keywords)) {
                 newList = newList + "@" + keywords + ";" + "1";
                 Log.d(context.getClass().toString(), "keyword update save checked keywords: " + keywords);
             } else {
                 String ammend = null;
                 String[] list = newList.split("@");
-                for(int i =0; i < list.length; i++) {
+                for (int i = 0; i < list.length; i++) {
                     String[] upc = list[i].split(";");
-                    if(upc.length == 2 && TextUtils.equals(upc[0], keywords)) {
+                    if (upc.length == 2 && TextUtils.equals(upc[0], keywords)) {
                         int count = Integer.valueOf(upc[1]) + 1;
                         list[i] = upc[0] + ";" + String.valueOf(count);
                     }
-                    if(ammend == null)
+                    if (ammend == null)
                         ammend = list[i];
-                    else if(list[i] != null)
+                    else if (list[i] != null)
                         ammend = ammend + "@" + list[i];
                 }
                 return prefs.edit().putString(type_key, ammend).commit();
@@ -365,7 +365,7 @@ public class PrUtils {
         return prefs.edit().putString(type_key, newList).commit();
     }
 
-    public static boolean removeCustomKeyword(Context context,String s, String type_key) {
+    public static boolean removeCustomKeyword(Context context, String s, String type_key) {
         SharedPreferences prefs = context.getSharedPreferences(CASHBACK_PREFS, 0);
         String oldList = getCustomKeywordList(context, type_key);
         String newList = "";
@@ -375,9 +375,9 @@ public class PrUtils {
             newList = "";
         } else {
             String[] temp = oldList.split("@");
-            for(int i = 0; i < temp.length; i++ ) {
+            for (int i = 0; i < temp.length; i++) {
                 if (!TextUtils.equals(temp[i], s)) {
-                    if(TextUtils.isEmpty(newList)) {
+                    if (TextUtils.isEmpty(newList)) {
                         newList = temp[i];
                     } else {
                         newList += "@" + temp[i];
@@ -385,7 +385,7 @@ public class PrUtils {
                 }
             }
         }
-        Log.d(context.getClass().toString(), "keyword remove save checked keywords: " +  s);
+        Log.d(context.getClass().toString(), "keyword remove save checked keywords: " + s);
         return prefs.edit().putString(type_key, newList).commit();
     }
 
@@ -415,8 +415,8 @@ public class PrUtils {
         String total = null;
         Double total_db = 0.0;
         ArrayList<ProductProfile> list = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAllProfile(context.getContentResolver());
-        if(list != null) {
-            for(ProductProfile p : list) {
+        if (list != null) {
+            for (ProductProfile p : list) {
                 if (TextUtils.equals(p.getPrice(), context.getResources().getStringArray(R.array.list_of_status)[2]) ||
                         TextUtils.equals(p.getPrice(), context.getResources().getStringArray(R.array.list_of_status)[3]))
                     total_db += Double.parseDouble(p.getUPC());
@@ -444,8 +444,8 @@ public class PrUtils {
     public static ArrayList<ProductProfile> getListOfUnpaidCbProfile(Context context) {
         ArrayList<ProductProfile> list = new ArrayList<>();
         ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAllProfile(context.getContentResolver());
-        for(ProductProfile p : fullList) {
-            if(isOver30Days(p.getDate()) && TextUtils.equals(p.getPrice(), context.getResources().getStringArray(R.array.list_of_status)[1])) {
+        for (ProductProfile p : fullList) {
+            if (isOver30Days(p.getDate()) && TextUtils.equals(p.getPrice(), context.getResources().getStringArray(R.array.list_of_status)[1])) {
                 list.add(p);
             }
         }
@@ -454,22 +454,22 @@ public class PrUtils {
 
     public static boolean isValidDateFormate(String date, Context context) {
         String[] dates = date.split("/");
-        if(dates.length != 3) {
+        if (dates.length != 3) {
             return false;
         }
-        if(dates[0].length() != 2 && dates[1].length() != 2 && dates[2].length() != 4) {
+        if (dates[0].length() != 2 && dates[1].length() != 2 && dates[2].length() != 4) {
             return false;
         }
         String[] mm = context.getResources().getStringArray(R.array.mm);
-        if (!isContent(mm,dates[0])) {
+        if (!isContent(mm, dates[0])) {
             return false;
         }
         String[] day = context.getResources().getStringArray(R.array.dd);
-        if (!isContent(day,dates[1])) {
+        if (!isContent(day, dates[1])) {
             return false;
         }
         String[] year = context.getResources().getStringArray(R.array.year);
-        if (!isContent(year,dates[2])) {
+        if (!isContent(year, dates[2])) {
             return false;
         }
         return true;
@@ -477,8 +477,8 @@ public class PrUtils {
 
     public static boolean isContent(String[] array, String s) {
         boolean temp = false;
-        for(int i = 0; i < array.length; i++) {
-            if(TextUtils.equals(array[i],s)){
+        for (int i = 0; i < array.length; i++) {
+            if (TextUtils.equals(array[i], s)) {
                 temp = true;
                 break;
             }
@@ -562,12 +562,11 @@ public class PrUtils {
     }
 
     /**
-     *
-     * @param activity context
-     * @param type result code
+     * @param activity   context
+     * @param type       result code
      * @param resourceId raw file name
-     * @param totalRow max row items
-     * @param storeName store name
+     * @param totalRow   max row items
+     * @param storeName  store name
      * @return
      */
     public static int readAndUpdate(final Activity activity, int type, int resourceId, int totalRow, String storeName) {
@@ -578,14 +577,14 @@ public class PrUtils {
             XSSFSheet sheet = workbook.getSheetAt(0);
             int rowsCount = sheet.getPhysicalNumberOfRows();
             FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
-            for (int r = 0; r<rowsCount; r++) {
+            for (int r = 0; r < rowsCount; r++) {
                 Row row = sheet.getRow(r);
                 //int cellsCount = row.getPhysicalNumberOfCells();
                 String[] value = new String[totalRow];
-                for (int c = 0; c<totalRow; c++) {
-                        value[c] = getCellAsString(row, c, formulaEvaluator);
+                for (int c = 0; c < totalRow; c++) {
+                    value[c] = getCellAsString(row, c, formulaEvaluator);
                 }
-                if(type == MenuPage.PICKFILE_RESULT_CODE_1) {
+                if (type == MenuPage.PICKFILE_RESULT_CODE_1) {
                     ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(), removeMark(value[0], " "));
                     if (profile == null) {
                         profile = setProfileForProduct(profile, value, storeName);
@@ -623,15 +622,15 @@ public class PrUtils {
     public static ProductProfile setProfileForProduct(ProductProfile p, String[] value, String filename) {
         if (p == null)
             p = new ProductProfile();
-        p.setSKU(removeMark(value[0]," "));
+        p.setSKU(removeMark(value[0], " "));
         p.setProductName(value[1]);
-        p.setASIN(removeMark(value[2]," "));
-        p.setFNSKU(removeMark(value[3]," "));
+        p.setASIN(removeMark(value[2], " "));
+        p.setFNSKU(removeMark(value[3], " "));
         p.setPrice(value[4]);
         p.setAmazonFee(value[5]);
-        if(TextUtils.equals(filename,PrConstant.store1))
+        if (TextUtils.equals(filename, PrConstant.store1))
             p.setTotalAdd(PrConstant.store1);
-        else if(TextUtils.equals(filename, PrConstant.store2))
+        else if (TextUtils.equals(filename, PrConstant.store2))
             p.setTotalAdd(PrConstant.store2);
         return p;
     }
@@ -654,21 +653,21 @@ public class PrUtils {
             CellValue cellValue = formulaEvaluator.evaluate(cell);
             switch (cellValue.getCellType()) {
                 case Cell.CELL_TYPE_BOOLEAN:
-                    value = ""+cellValue.getBooleanValue();
+                    value = "" + cellValue.getBooleanValue();
                     break;
                 case Cell.CELL_TYPE_NUMERIC:
                     double numericValue = cellValue.getNumberValue();
-                    if(HSSFDateUtil.isCellDateFormatted(cell)) {
+                    if (HSSFDateUtil.isCellDateFormatted(cell)) {
                         double date = cellValue.getNumberValue();
                         SimpleDateFormat formatter =
                                 new SimpleDateFormat("dd/MM/yy");
                         value = formatter.format(HSSFDateUtil.getJavaDate(date));
                     } else {
-                        value = ""+numericValue;
+                        value = "" + numericValue;
                     }
                     break;
                 case Cell.CELL_TYPE_STRING:
-                    value = ""+cellValue.getStringValue();
+                    value = "" + cellValue.getStringValue();
                     break;
                 default:
             }
@@ -682,8 +681,8 @@ public class PrUtils {
     public static void updateProductName(Activity activity, String type) {
         final Context context = activity.getApplicationContext();
         ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAllProfile(activity.getContentResolver());
-        for(ProductProfile p : fullList) {
-            if(p.getProductName() == null)
+        for (ProductProfile p : fullList) {
+            if (p.getProductName() == null)
                 continue;
             saveCustomKeyword(activity, p.getProductName(), type);
             Log.e("ye chen", "updateProductName " + p.getProductName());
@@ -700,18 +699,18 @@ public class PrUtils {
         int store_b = 0;
         boolean inStoreA = false;
         boolean inStoreB = false;
-        ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByAsin(activity.getContentResolver(),removeMark(asin," "));
-        for(ProductProfile p : fullList) {
-            if(TextUtils.equals(PrConstant.store1,p.getTotalAdd())) {
+        ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByAsin(activity.getContentResolver(), removeMark(asin, " "));
+        for (ProductProfile p : fullList) {
+            if (TextUtils.equals(PrConstant.store1, p.getTotalAdd())) {
                 inStoreA = true;
                 String s = p.getRequestNm();
-                if(s != null)
+                if (s != null)
                     store_a += Float.valueOf(s);
             }
-            if(TextUtils.equals(PrConstant.store2,p.getTotalAdd())) {
+            if (TextUtils.equals(PrConstant.store2, p.getTotalAdd())) {
                 inStoreB = true;
                 String s = p.getRequestNm();
-                if(s != null)
+                if (s != null)
                     store_b += Float.valueOf(p.getRequestNm());
             }
         }
@@ -726,7 +725,7 @@ public class PrUtils {
         int value1 = store_a - currentUpc_store1;
         int value2 = store_b - currentUpc_store2;
         Log.d("ye chen", "Store a count: " + store_a + " Store a UPC count : " + currentUpc_store1 + " Store b count: " + store_b + " Store b UPC count : " + currentUpc_store2);
-        if(value1 > value2)
+        if (value1 > value2)
             return PrConstant.store1;
         else
             return PrConstant.store2;
@@ -738,13 +737,13 @@ public class PrUtils {
         if (TextUtils.isEmpty(newList)) {
             return 0;
         } else {
-            if(!newList.contains(upc)) {
+            if (!newList.contains(upc)) {
                 return 0;
             } else {
                 String[] list = newList.split("@");
-                for(int i =0; i < list.length; i++) {
+                for (int i = 0; i < list.length; i++) {
                     String[] list2 = list[i].split(";");
-                    if(list2.length == 2 && TextUtils.equals(list2[0], upc)) {
+                    if (list2.length == 2 && TextUtils.equals(list2[0], upc)) {
                         return Integer.valueOf(list2[1]);
                     }
                 }
@@ -760,13 +759,13 @@ public class PrUtils {
         if (TextUtils.isEmpty(newList)) {
             return result;
         } else {
-                String[] list = newList.split("@");
-                for(int i =0; i < list.length; i++) {
-                    String[] list2 = list[i].split(";");
-                    if(list2.length == 2) {
-                        result.add(list2);
-                    }
+            String[] list = newList.split("@");
+            for (int i = 0; i < list.length; i++) {
+                String[] list2 = list[i].split(";");
+                if (list2.length == 2) {
+                    result.add(list2);
                 }
+            }
         }
         return result;
     }
@@ -777,7 +776,7 @@ public class PrUtils {
         final String NEW_LINE_SEPARATOR = "\n";
 
         //CSV file header
-        final Object [] FILE_HEADER = {"SKU", "Product Name", "ASIN", "FNSKU", "PRICE", "FEE", "UPC", "Request Quantity", "Store"};
+        final Object[] FILE_HEADER = {"SKU", "Product Name", "ASIN", "FNSKU", "PRICE", "FEE", "UPC", "Request Quantity", "Store"};
         String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
         String fileName = "report_amazon.csv";
         String filePath = baseDir + File.separator + Environment.DIRECTORY_DOWNLOADS + File.separator + fileName;
@@ -847,12 +846,12 @@ public class PrUtils {
                 Log.e("ye chen", "Error while flushing/closing fileWriter/csvPrinter!!!", e);
             }
         }
-            String subject = "总数据";
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("plain/text");
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(csvFile));
-            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-            context.startActivityForResult(Intent.createChooser(intent, "E-mail"), 1);
+        String subject = "总数据";
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
+        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(csvFile));
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        context.startActivityForResult(Intent.createChooser(intent, "E-mail"), 1);
 
     }
 
@@ -862,7 +861,7 @@ public class PrUtils {
         final String NEW_LINE_SEPARATOR = "\n";
 
         //CSV file header
-        final Object [] FILE_HEADER = {"SKU", "Product Name", "ASIN", "FNSKU", "UPC", "Request Quantity", "Store","Total Restock"};
+        final Object[] FILE_HEADER = {"SKU", "Product Name", "ASIN", "FNSKU", "UPC", "Request Quantity", "Store", "Total Restock"};
         String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
         String fileName = "report_amazon_restock.csv";
         String filePath = baseDir + File.separator + Environment.DIRECTORY_DOWNLOADS + File.separator + fileName;
@@ -888,9 +887,11 @@ public class PrUtils {
             List<String[]> mobileOrderList = getUpcList(context, PrConstant.shared_upc_total_store1);
             for (String[] mobileOrder : mobileOrderList) {
                 ProductProfile keyProfile = PrManager.getManager().getDB().getAAProfileByUpc(context.getContentResolver(), mobileOrder[0]);
+                if(keyProfile == null)
+                    continue;;
                 ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByAsin(context.getContentResolver(), removeMark(keyProfile.getASIN(), " "));
                 for (ProductProfile p : fullList) {
-                    if(TextUtils.equals(p.getTotalAdd(), PrConstant.store1)){
+                    if (TextUtils.equals(p.getTotalAdd(), PrConstant.store1)) {
                         ArrayList<String> lineItemDataRecord = new ArrayList<>();
                         lineItemDataRecord.add(p.getSKU());
                         lineItemDataRecord.add(p.getProductName());
@@ -900,7 +901,7 @@ public class PrUtils {
                         lineItemDataRecord.add(p.getRequestNm());
                         lineItemDataRecord.add(p.getTotalAdd());
                         lineItemDataRecord.add(mobileOrder[1]);
-                    csvFilePrinter.printRecord(lineItemDataRecord);
+                        csvFilePrinter.printRecord(lineItemDataRecord);
                     }
                 }
             }
@@ -912,10 +913,12 @@ public class PrUtils {
             csvFilePrinter.printRecord("Store HOME");
             for (String[] mobileOrder : mobileOrderList2) {
                 ProductProfile keyProfile = PrManager.getManager().getDB().getAAProfileByUpc(context.getContentResolver(), mobileOrder[0]);
+                if(keyProfile == null)
+                    continue;;
                 ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByAsin(context.getContentResolver(), removeMark(keyProfile.getASIN(), " "));
                 for (ProductProfile p : fullList) {
-                    if(TextUtils.equals(p.getTotalAdd(), PrConstant.store2)){
-                    ArrayList<String> lineItemDataRecord = new ArrayList<>();
+                    if (TextUtils.equals(p.getTotalAdd(), PrConstant.store2)) {
+                        ArrayList<String> lineItemDataRecord = new ArrayList<>();
                         lineItemDataRecord.add(p.getSKU());
                         lineItemDataRecord.add(p.getProductName());
                         lineItemDataRecord.add(p.getASIN());
@@ -944,7 +947,97 @@ public class PrUtils {
         intent.setType("plain/text");
         intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(csvFile));
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        context.startActivityForResult(Intent.createChooser(intent, "E-mail"), 1);
+        context.startActivityForResult(Intent.createChooser(intent, "E-mail"), 3);
+    }
 
+    public static void reduceShippedItem(Activity activity) {
+        int store_a = 0;
+        int store_b = 0;
+        List<String[]> list1 = getUpcList(activity, PrConstant.shared_upc_total_store2);
+        List<String[]> list2 = getUpcList(activity, PrConstant.shared_upc_total_store2);
+        for (int i = 0; i < list1.size(); i++) {
+            for (int j = 0; j < list2.size(); j++) {
+                if (TextUtils.equals(list1.get(i)[0], list2.get(j)[0])) {
+                    list2.get(j)[0] = "0";
+                }
+            }
+        }
+        for (String[] mobileOrder : list1) {
+            int currentUpc_store1 = getUpcCount(activity, mobileOrder[0], PrConstant.shared_upc_total_store1);
+            int currentUpc_store2 = getUpcCount(activity, mobileOrder[0], PrConstant.shared_upc_total_store2);
+            ProductProfile keyProfile = PrManager.getManager().getDB().getAAProfileByUpc(activity.getContentResolver(), mobileOrder[0]);
+            if(keyProfile == null)
+                continue;;
+            ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByAsin(activity.getContentResolver(), keyProfile.getASIN());
+            for (ProductProfile p : fullList) {
+                if (TextUtils.equals(PrConstant.store1, p.getTotalAdd())) {
+                    String s = p.getRequestNm();
+                    if (s != null) {
+                        float temp = Float.valueOf(s);
+                        store_a = (int) temp;
+                        if (store_a < currentUpc_store1) {
+                            store_a = 0;
+                            currentUpc_store1 = currentUpc_store1 - store_a;
+                        } else
+                            store_a = store_a - currentUpc_store1;
+                        p.setRequestNumber(String.valueOf(store_a));
+                        PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), p);
+                    }
+                }
+                if (TextUtils.equals(PrConstant.store2, p.getTotalAdd())) {
+                    String s = p.getRequestNm();
+                    if (s != null) {
+                        float temp = Float.valueOf(s);
+                        store_b = (int) temp;
+                        if (store_b < currentUpc_store2) {
+                            store_b = 0;
+                            currentUpc_store2 = currentUpc_store2 - store_b;
+                        } else
+                            store_b = store_b - currentUpc_store2;
+                        p.setRequestNumber(String.valueOf(store_b));
+                        PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), p);
+                    }
+                }
+            }
+        }
+
+        for (String[] mobileOrder : list2) {
+            int currentUpc_store1 = getUpcCount(activity, mobileOrder[0], PrConstant.shared_upc_total_store1);
+            int currentUpc_store2 = getUpcCount(activity, mobileOrder[0], PrConstant.shared_upc_total_store2);
+            ProductProfile keyProfile = PrManager.getManager().getDB().getAAProfileByUpc(activity.getContentResolver(), mobileOrder[0]);
+            if(keyProfile == null)
+                continue;;
+            ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByAsin(activity.getContentResolver(), keyProfile.getASIN());
+            for (ProductProfile p : fullList) {
+                if (TextUtils.equals(PrConstant.store1, p.getTotalAdd())) {
+                    String s = p.getRequestNm();
+                    if (s != null) {
+                        float temp = Float.valueOf(s);
+                        store_a = (int) temp;
+                        if (store_a < currentUpc_store1) {
+                            store_a = 0;
+                            currentUpc_store1 = currentUpc_store1 - store_a;
+                        } else
+                            store_a = store_a - currentUpc_store1;
+                        p.setRequestNumber(String.valueOf(store_a));
+                        PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), p);
+                    }
+                }
+                if (TextUtils.equals(PrConstant.store2, p.getTotalAdd())) {
+                    String s = p.getRequestNm();
+                    if (s != null) {
+                        float temp = Float.valueOf(s);
+                        store_b = (int) temp;
+                        if (store_b < currentUpc_store2) {
+                            store_b = 0;
+                            currentUpc_store2 = currentUpc_store2 - store_b;
+                        } else
+                            store_b = store_b - currentUpc_store2;
+                        p.setRequestNumber(String.valueOf(store_b));
+                        PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), p);
+                    }
+                }
+            }
+        }
     }
 }

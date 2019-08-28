@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        style="@style/menu_text_style"
+        android:text="@string/upc_title"
+        android:background="@color/color_background"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/Title" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:background="@android:color/white">
+
+        <TableLayout
+            android:id="@+id/tl_add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+
+            <TableRow>
+                <TextView
+                    android:id="@+id/tv_upc"
+                    android:layout_width="wrap_content"
+                    style="@style/add_order_text_style"
+                    android:text="@string/upc_menu1"/>
+
+                <EditText
+                    android:id="@+id/ed_scanned_number"
+                    android:layout_width="0dp"
+                    style="@style/add_order_edit_text_style"
+                    android:layout_weight="1"
+                    android:scrollHorizontally="true"
+                    />
+                <requestFocus/>
+                <Button
+                    android:id="@+id/bt_submit"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:text="@string/upc_set"
+                    android:textColor="@android:color/white"
+                    android:background="@color/color_background" />
+            </TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divid_alarm_1" />
+
+            <TableRow>
+                <TextView
+                    android:id="@+id/tv_upc_result_a"
+                    style="@style/add_order_edit_text_style"
+                    android:layout_width="match_parent"
+                    android:text="@string/upc_menu1"/>
+            </TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divid_alarm_1" />
+
+            <TableRow>
+                <TextView
+                    android:id="@+id/tv_upc_result_b"
+                    style="@style/add_order_edit_text_style"
+                    android:layout_width="match_parent"
+                    android:text="@string/upc_menu1"/>
+            </TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divid_alarm_1" />
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tv_product"
+                    android:layout_width="wrap_content"
+                    android:text="@string/upc_menu2"
+                    style="@style/add_order_text_style" />
+
+                <EditText
+                    android:id="@+id/ed_product_name"
+                    android:layout_width="0dp"
+                    style="@style/add_order_edit_text_style"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPostalAddress"
+                    android:scrollHorizontally="true"
+                    android:hint="@string/celect_name"/>
+
+
+                <Button
+                    android:id="@+id/bt_set_2"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:text="@string/upc_set"
+                    android:textColor="@android:color/white"
+                    android:background="@color/color_background" />
+            </TableRow>
+
+            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divid_alarm_1" />
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tv_product_b"
+                    android:layout_width="wrap_content"
+                    android:text="@string/upc_menu2"
+                    style="@style/add_order_text_style" />
+
+                <EditText
+                    android:id="@+id/ed_product_name_b"
+                    android:layout_width="0dp"
+                    style="@style/add_order_edit_text_style"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPostalAddress"
+                    android:scrollHorizontally="true"
+                    android:hint="@string/celect_name"/>
+
+
+                <Button
+                    android:id="@+id/bt_set_3"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:text="@string/upc_set"
+                    android:textColor="@android:color/white"
+                    android:background="@color/color_background" />
+            </TableRow>
+        </TableLayout>
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_background"
+        />
+    <TextView
+        style="@style/menu_text_style"
+        android:text="@string/menu_5"
+        android:id="@+id/menu_5" />
+</LinearLayout>

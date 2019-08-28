@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="main_menu">菜单</string>
+    <string name="check_bar_code">请扫描</string>
+
+    <!--Menu -->
+    <string name="menu_title">功能菜单</string>
+    <string name="menu_1">总产品录入</string>
+    <string name="menu_2">补货产品录入</string>
+    <string name="menu_3">下拉菜单产品录入</string>
+    <string name="menu_4">清除扫描产品</string>
+    <string name="menu_5">总产品报表</string>
+
+    <!--add new upc-->
+    <string name="title_add_view">添加新UPC</string>
+    <string name="upc">UPC</string>
+    <string name="product_name">产品名</string>
+    <string name="celect_name">选择产品</string>
+    <string name="add">添加</string>
+
+
+    <!-- upc product page -->
+    <string name="upc_title">产品更新</string>
+    <string name="upc_menu1">设置数量</string>
+    <string name="upc_set">确认</string>
+    <string name="upc_store1">箱子 A</string>
+    <string name="upc_store2">箱子 B</string>
+    <string name="upc_menu2">A补货量</string>
+    <string name="upc_menu3">B补货量</string>
+</resources>

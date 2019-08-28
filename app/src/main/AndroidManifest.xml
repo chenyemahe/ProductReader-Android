@@ -34,6 +34,7 @@
         <activity android:name=".ScanActivity"/>
         <activity android:name=".MenuPage"/>
         <activity android:name=".AddUpc"/>
+        <activity android:name=".UpcScannedProductPage"/>
 
        <!-- <provider
             android:name="androidx.core.content.FileProvider"

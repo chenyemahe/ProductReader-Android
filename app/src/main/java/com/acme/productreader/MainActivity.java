@@ -157,14 +157,11 @@ public class MainActivity extends AppCompatActivity {
                 ProductProfile profile = PrManager.getManager().getDB().getAAProfileByUpc(getContentResolver(),value);
                 if(profile != null) {
                     scanResults.setText(profile.getProductName());
-                    String storeCelect = PrUtils.chooseStore(profile.getASIN(),profile.getUPC(),this);
-                    store.setText(storeCelect);
-                    if(TextUtils.equals(storeCelect, PrConstant.store1))
-                        PrUtils.saveUpcCount(this,value,PrConstant.shared_upc_total_store1);
-                    else if(TextUtils.equals(storeCelect, PrConstant.store2))
-                        PrUtils.saveUpcCount(this,value,PrConstant.shared_upc_total_store2);
                     upcCount.setText("Current UPC count For Store A: "+ PrUtils.getCustomKeywordList(this,PrConstant.shared_upc_total_store1) + " ---- "
                     +"Current UPC count For Store B: "+ PrUtils.getCustomKeywordList(this,PrConstant.shared_upc_total_store2));
+                    Intent intent = new Intent(this, UpcScannedProductPage.class);
+                    intent.putExtras(result);
+                    startActivity(intent);
                 }
                 else {
                     Intent intent = new Intent(this,AddUpc.class);

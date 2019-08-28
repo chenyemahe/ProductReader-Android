@@ -335,15 +335,15 @@ public class PrUtils {
         return prefs.getString(type_key, "");
     }
 
-    public static boolean saveUpcCount(Context context, String keywords, String type_key) {
+    public static boolean saveUpcCount(Context context, String keywords, String type_key, int number) {
         SharedPreferences prefs = context.getSharedPreferences(CASHBACK_PREFS, 0);
         String newList = getCustomKeywordList(context, type_key);
         if (TextUtils.isEmpty(newList)) {
-            keywords = keywords + ";" + "1";
+            keywords = keywords + ";" + number;
             newList = keywords;
         } else {
             if (!newList.contains(keywords)) {
-                newList = newList + "@" + keywords + ";" + "1";
+                newList = newList + "@" + keywords + ";" + number;
                 Log.d(context.getClass().toString(), "keyword update save checked keywords: " + keywords);
             } else {
                 String ammend = null;
@@ -351,7 +351,7 @@ public class PrUtils {
                 for (int i = 0; i < list.length; i++) {
                     String[] upc = list[i].split(";");
                     if (upc.length == 2 && TextUtils.equals(upc[0], keywords)) {
-                        int count = Integer.valueOf(upc[1]) + 1;
+                        int count = Integer.valueOf(upc[1]) + number;
                         list[i] = upc[0] + ";" + String.valueOf(count);
                     }
                     if (ammend == null)

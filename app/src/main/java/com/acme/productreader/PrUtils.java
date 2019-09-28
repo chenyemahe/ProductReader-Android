@@ -336,6 +336,8 @@ public class PrUtils {
     }
 
     public static boolean saveUpcCount(Context context, String keywords, String type_key, int number) {
+        if(number == 0)
+            return false;
         SharedPreferences prefs = context.getSharedPreferences(CASHBACK_PREFS, 0);
         String newList = getCustomKeywordList(context, type_key);
         if (TextUtils.isEmpty(newList)) {
@@ -515,14 +517,14 @@ public class PrUtils {
         activity.startActivityForResult(chooseFile, requestCode);
     }
 
-    public static void readExcelFileFromAssets(Activity activity, String filePath, int type) {
+    public static void readExcelFileFromAssets(final MenuPage activity, String filePath, int type) {
 
         Log.d("ye chen", "readExcelFileFromAssets");
         int result = 0;
         final Context context = activity.getApplicationContext();
         switch (type) {
             case MenuPage.PICKFILE_RESULT_CODE_1:
-                result = readAndUpdate(activity, type, R.raw.acme, 6, PrConstant.store1);
+                result = readAndUpdate(activity, type, R.raw.acme, 7, PrConstant.store1);
                 if (result != -1)
                     activity.runOnUiThread(new Runnable() {
                         public void run() {
@@ -530,7 +532,7 @@ public class PrUtils {
                         }
                     });
 
-                result = readAndUpdate(activity, type, R.raw.home, 6, PrConstant.store2);
+                result = readAndUpdate(activity, type, R.raw.home, 7, PrConstant.store2);
                 if (result != -1)
                     activity.runOnUiThread(new Runnable() {
                         public void run() {
@@ -559,6 +561,12 @@ public class PrUtils {
             default:
                 break;
         }
+
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                activity.dismissprogressbar();
+            }
+        });
     }
 
     /**
@@ -576,7 +584,7 @@ public class PrUtils {
             XSSFWorkbook workbook = new XSSFWorkbook(stream);
             XSSFSheet sheet = workbook.getSheetAt(0);
             int rowsCount = sheet.getPhysicalNumberOfRows();
-            FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
+            FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();int i =0, j=0;
             for (int r = 0; r < rowsCount; r++) {
                 Row row = sheet.getRow(r);
                 //int cellsCount = row.getPhysicalNumberOfCells();
@@ -584,9 +592,12 @@ public class PrUtils {
                 for (int c = 0; c < totalRow; c++) {
                     value[c] = getCellAsString(row, c, formulaEvaluator);
                 }
+                try {
                 if (type == MenuPage.PICKFILE_RESULT_CODE_1) {
-                    ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(), removeMark(value[0], " "));
+                    String sku = removeMark(value[0], " ");
+                    ProductProfile profile = PrManager.getManager().getDB().getAAProfileBySKU(activity.getContentResolver(), sku);
                     if (profile == null) {
+                        i++;
                         profile = setProfileForProduct(profile, value, storeName);
                         PrManager.getManager().getDB().saveCbProfile(activity.getContentResolver(), profile);
                         Log.e("ye chen", "not in db ");
@@ -610,10 +621,11 @@ public class PrUtils {
                         PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), profile);
                         Log.e("ye chen", profile.getRequestNm());
                     }
+                }} catch (Exception e) {
                 }
             }
         } catch (Exception e) {
-            Log.e("ye chen", "error " + e.toString());
+            Log.e("ye chen 3", "error " + e.toString());
             result = -1;
         }
         return result;
@@ -622,12 +634,20 @@ public class PrUtils {
     public static ProductProfile setProfileForProduct(ProductProfile p, String[] value, String filename) {
         if (p == null)
             p = new ProductProfile();
-        p.setSKU(removeMark(value[0], " "));
+        String sku = removeMark(value[0], " ");
+        p.setSKU(sku);
         p.setProductName(value[1]);
         p.setASIN(removeMark(value[2], " "));
         p.setFNSKU(removeMark(value[3], " "));
         p.setPrice(value[4]);
         p.setAmazonFee(value[5]);
+        if(value[6].contains("upc"))
+            value[6].replace("upc","");
+        if(value.length >6 && value[6] != null && (value[6].length() == 12 || value[6].length() == 13 || value[6].length() == 11))
+            if(value[6].length() == 11)
+                p.setUPC("0" + value[6]);
+            else
+                p.setUPC(value[6]);
         if (TextUtils.equals(filename, PrConstant.store1))
             p.setTotalAdd(PrConstant.store1);
         else if (TextUtils.equals(filename, PrConstant.store2))
@@ -809,7 +829,8 @@ public class PrUtils {
                     lineItemDataRecord.add(p.getFNSKU());
                     lineItemDataRecord.add(p.getPrice());
                     lineItemDataRecord.add(p.getFee());
-                    lineItemDataRecord.add(p.getUPC());
+                    String upc = "upc" + p.getUPC();
+                    lineItemDataRecord.add(upc);
                     lineItemDataRecord.add(p.getRequestNm());
                     lineItemDataRecord.add(p.getTotalAdd());
                     csvFilePrinter.printRecord(lineItemDataRecord);
@@ -970,33 +991,37 @@ public class PrUtils {
                 continue;;
             ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByAsin(activity.getContentResolver(), keyProfile.getASIN());
             for (ProductProfile p : fullList) {
-                if (TextUtils.equals(PrConstant.store1, p.getTotalAdd())) {
-                    String s = p.getRequestNm();
-                    if (s != null) {
-                        float temp = Float.valueOf(s);
-                        store_a = (int) temp;
-                        if (store_a < currentUpc_store1) {
-                            store_a = 0;
-                            currentUpc_store1 = currentUpc_store1 - store_a;
-                        } else
-                            store_a = store_a - currentUpc_store1;
-                        p.setRequestNumber(String.valueOf(store_a));
-                        PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), p);
+                try {
+                    if (TextUtils.equals(PrConstant.store1, p.getTotalAdd())) {
+                        String s = p.getRequestNm();
+                        if (s != null) {
+                            float temp = Float.valueOf(s);
+                            store_a = (int) temp;
+                            if (store_a < currentUpc_store1) {
+                                store_a = 0;
+                                currentUpc_store1 = currentUpc_store1 - store_a;
+                            } else
+                                store_a = store_a - currentUpc_store1;
+                            p.setRequestNumber(String.valueOf(store_a));
+                            PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), p);
+                        }
                     }
-                }
-                if (TextUtils.equals(PrConstant.store2, p.getTotalAdd())) {
-                    String s = p.getRequestNm();
-                    if (s != null) {
-                        float temp = Float.valueOf(s);
-                        store_b = (int) temp;
-                        if (store_b < currentUpc_store2) {
-                            store_b = 0;
-                            currentUpc_store2 = currentUpc_store2 - store_b;
-                        } else
-                            store_b = store_b - currentUpc_store2;
-                        p.setRequestNumber(String.valueOf(store_b));
-                        PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), p);
+                    if (TextUtils.equals(PrConstant.store2, p.getTotalAdd())) {
+                        String s = p.getRequestNm();
+                        if (s != null) {
+                            float temp = Float.valueOf(s);
+                            store_b = (int) temp;
+                            if (store_b < currentUpc_store2) {
+                                store_b = 0;
+                                currentUpc_store2 = currentUpc_store2 - store_b;
+                            } else
+                                store_b = store_b - currentUpc_store2;
+                            p.setRequestNumber(String.valueOf(store_b));
+                            PrManager.getManager().getDB().updateAAProfile(activity.getContentResolver(), p);
+                        }
                     }
+                } catch (Exception e) {
+                    Log.e("ye chen", e.toString());
                 }
             }
         }

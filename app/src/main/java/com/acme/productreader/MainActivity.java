@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView upcCount;
     private TextView store;
     private Button submit;
+    private Button upc_enter;
 
 
     @Override
@@ -93,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, MenuPage.class));
+            }
+        });
+
+        upc_enter = findViewById(R.id.upc_ty);
+        upc_enter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,AddUpc.class);
+                intent.putExtra(PrConstant.type_upc,"no_value");
+                startActivity(intent);
             }
         });
     }
@@ -155,6 +166,22 @@ public class MainActivity extends AppCompatActivity {
             }
             if (TextUtils.equals(type, PrConstant.type_upc)) {
                 ProductProfile profile = PrManager.getManager().getDB().getAAProfileByUpc(getContentResolver(),value);
+
+                ArrayList<ProductProfile> fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByUPC(this.getContentResolver(), value);
+                boolean hasFSKU = false;
+                if(fullList != null) {
+                    for(ProductProfile p : fullList) {
+                        String fsku = p.getFNSKU();
+                        if(fsku != null && fsku.length() == 10) {
+                            hasFSKU = true;
+                            break;
+                        }
+                    }
+                    if(!hasFSKU) {
+                        Toast.makeText(this,R.string.not_fba, Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
                 if(profile != null) {
                     scanResults.setText(profile.getProductName());
                     upcCount.setText("Current UPC count For Store A: "+ PrUtils.getCustomKeywordList(this,PrConstant.shared_upc_total_store1) + " ---- "

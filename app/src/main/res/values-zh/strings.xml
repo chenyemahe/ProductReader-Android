@@ -4,6 +4,7 @@
 
     <string name="main_menu">菜单</string>
     <string name="check_bar_code">请扫描</string>
+    <string name="not_fba">此产品不能邮寄。</string>
 
     <!--Menu -->
     <string name="menu_title">功能菜单</string>
@@ -19,6 +20,7 @@
     <string name="product_name">产品名</string>
     <string name="celect_name">选择产品</string>
     <string name="add">添加</string>
+    <string name="number_no_match">补货A,B 和总量不等，请重新检查。</string>
 
 
     <!-- upc product page -->
@@ -27,6 +29,11 @@
     <string name="upc_set">确认</string>
     <string name="upc_store1">箱子 A</string>
     <string name="upc_store2">箱子 B</string>
-    <string name="upc_menu2">A补货量</string>
-    <string name="upc_menu3">B补货量</string>
+    <string name="upc_menu2">A需补货量</string>
+    <string name="upc_menu3">B需补货量</string>
+    <string name="upc_menu4">更新补货</string>
+    <string name="upc_enter">UPC输入</string>
+    <string name="upc_error">UPC 格式不正确，请重新输入。</string>
+    <string name="upc_product_name">产品名称</string>
+    <string name="upc_product_number">需求数量</string>
 </resources>

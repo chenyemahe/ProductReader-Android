@@ -178,7 +178,7 @@ public class ProductReaderDba {
 
     public ProductProfile getAAProfileByUpc(ContentResolver cr, String upc) {
         ProductProfile profile = null;
-        Log.d(TAG, "{getAAProfile} the FSKU is : " + upc);
+        Log.d(TAG, "{getAAProfile} the upc is : " + upc);
         if (upc == null)
             return null;
 
@@ -203,6 +203,40 @@ public class ProductReaderDba {
         }
 
         return profile;
+    }
+
+    public List<ProductProfile> getAAProfileListByUPC(ContentResolver cr, String upc) {
+        List<ProductProfile> profileList = null;
+        ProductProfile profile = null;
+        Log.d(TAG, "{getAAProfile} the upc is : " + upc);
+        if (upc == null)
+            return null;
+
+        Cursor cursor = null;
+
+        try {
+            cursor = cr.query(PrProvider.ProfileColumns.CONTENT_URI, null, PROFILE_SELECTION_BY_UPC,
+                    new String[]{
+                            upc
+                    }, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                profileList = new ArrayList<ProductProfile>();
+                do {
+                    profile = new ProductProfile();
+                    PrUtils.fromCursor(cursor, profile);
+                    profileList.add(profile);
+                } while (cursor.moveToNext());
+
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Error in retrieve Date: " + upc + e.toString());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return profileList;
     }
 
     public List<ProductProfile> getAAProfileListByName(ContentResolver cr, String name) {

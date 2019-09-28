@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -16,7 +17,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpcScannedProductPage extends Activity implements View.OnClickListener{
+public class UpcScannedProductPage extends Activity implements View.OnClickListener {
 
     private EditText ed_a;
     private EditText ed_b;
@@ -26,6 +27,8 @@ public class UpcScannedProductPage extends Activity implements View.OnClickListe
     private Button bt_c;
     private TextView tv_a;
     private TextView tv_b;
+    private TextView p_name;
+    private TextView p_number;
 
     private TextView submit;
     private ArrayList<ProductProfile> fullList;
@@ -41,6 +44,8 @@ public class UpcScannedProductPage extends Activity implements View.OnClickListe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.upcproduct_page);
+        p_name = findViewById(R.id.tv_product_name_2);
+        p_number = findViewById(R.id.tv_request_number_2);
         ed_a = findViewById(R.id.ed_scanned_number);
         ed_b = findViewById(R.id.ed_product_name);
         ed_c = findViewById(R.id.ed_product_name_b);
@@ -73,8 +78,11 @@ public class UpcScannedProductPage extends Activity implements View.OnClickListe
         super.onResume();
         Bundle result = getIntent().getExtras();
         upc = result.getString("barcode");
-        ProductProfile profile = PrManager.getManager().getDB().getAAProfileByUpc(getContentResolver(),upc);
+        ProductProfile profile = PrManager.getManager().getDB().getAAProfileByUpc(getContentResolver(), upc);
         fullList = (ArrayList<ProductProfile>) PrManager.getManager().getDB().getAAProfileListByAsin(getContentResolver(), profile.getASIN());
+        calculateResult(upc,0);
+        p_name.setText(profile.getProductName());
+        p_number.setText(String.valueOf((cached_a+cached_b)));
     }
 
     @Override
@@ -84,7 +92,9 @@ public class UpcScannedProductPage extends Activity implements View.OnClickListe
                 calculateResult(upc, Integer.valueOf(ed_a.getText().toString()));
                 tv_a.setText("A 总补: " + cached_a + " A 分配：" + restock_a);
                 tv_b.setText("B 总补: " + cached_b + " B 分配：" + restock_b);
-                Log.d("ye chen", " " +restock_a+restock_b);
+                ed_b.setText(String.valueOf(restock_a));
+                ed_c.setText(String.valueOf(restock_b));
+                Log.d("ye chen", " " + restock_a + restock_b);
                 break;
             case R.id.bt_set_2:
                 cached_a = Integer.valueOf(ed_b.getText().toString());
@@ -94,18 +104,37 @@ public class UpcScannedProductPage extends Activity implements View.OnClickListe
                 tv_b.setText("B 总补: " + cached_b + " B 分配：" + restock_b);
                 break;
             case R.id.bt_set_3:
-                cached_b = Integer.valueOf(ed_c.getText().toString());
-                updateValue_b();
-                calculateResult(upc, Integer.valueOf(ed_a.getText().toString()));
-                tv_a.setText("A 总补: " + cached_a + " A 分配：" + restock_a);
-                tv_b.setText("B 总补: " + cached_b + " B 分配：" + restock_b);
+                try {
+                    int a = Integer.valueOf(ed_b.getText().toString());
+                    int b = Integer.valueOf(ed_c.getText().toString());
+                    if((a + b) != Integer.valueOf(ed_a.getText().toString())) {
+                        Toast.makeText(this,R.string.number_no_match, Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    restock_a = a;
+                    restock_b = b;
+                    //updateValue_b();
+                    //calculateResult(upc, Integer.valueOf(ed_a.getText().toString()));
+                    tv_a.setText("A 总补: " + cached_a + " A 分配：" + restock_a);
+                    tv_b.setText("B 总补: " + cached_b + " B 分配：" + restock_b);
+                } catch (Exception e) {
+                    Log.e("ye chen", e.toString());
+                }
                 break;
             case R.id.menu_5:
-                PrUtils.saveUpcCount(this,upc,PrConstant.shared_upc_total_store1,restock_a);
-                PrUtils.saveUpcCount(this,upc,PrConstant.shared_upc_total_store2,restock_b);
-                this.finish();
+                try {
+                    if((restock_a + restock_b) != Integer.valueOf(ed_a.getText().toString())) {
+                        Toast.makeText(this,R.string.number_no_match, Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    PrUtils.saveUpcCount(this, upc, PrConstant.shared_upc_total_store1, restock_a);
+                    PrUtils.saveUpcCount(this, upc, PrConstant.shared_upc_total_store2, restock_b);
+                    this.finish();
+                } catch (Exception e) {
+                    Log.e("ye chen", e.toString());
+                }
             default:
-                    break;
+                break;
         }
     }
 
@@ -120,13 +149,13 @@ public class UpcScannedProductPage extends Activity implements View.OnClickListe
             if (TextUtils.equals(PrConstant.store1, p.getTotalAdd())) {
                 inStoreA = true;
                 String s = p.getRequestNm();
-                if (s != null)
+                if (!TextUtils.isEmpty(s))
                     store_a += Float.valueOf(s);
             }
             if (TextUtils.equals(PrConstant.store2, p.getTotalAdd())) {
                 inStoreB = true;
                 String s = p.getRequestNm();
-                if (s != null)
+                if (!TextUtils.isEmpty(s))
                     store_b += Float.valueOf(p.getRequestNm());
             }
         }
@@ -134,6 +163,11 @@ public class UpcScannedProductPage extends Activity implements View.OnClickListe
         cached_a = store_a;
         cached_b = store_b;
 
+        if(number == 0) {
+            restock_a = 0;
+            restock_b = 0;
+            return;
+        }
         if (!inStoreA) {
             restock_a = 0;
             restock_b = number;
@@ -148,14 +182,20 @@ public class UpcScannedProductPage extends Activity implements View.OnClickListe
         int upc_a = PrUtils.getUpcCount(this, upc, PrConstant.shared_upc_total_store1);
         int upc_b = PrUtils.getUpcCount(this, upc, PrConstant.shared_upc_total_store2);
 
-        if(cached_b == cached_a) {
+        if (cached_b == cached_a) {
             restock_b = number / 2;
             restock_a = number - restock_b;
             return;
         }
 
 
-        for(int i = 1; i <= number; i++) {
+        if ((store_a - upc_a) == (store_b - upc_b)) {
+            restock_b = number / 2;
+            restock_a = number - restock_b;
+            return;
+        }
+
+        for (int i = 1; i <= number; i++) {
             if ((store_a - upc_a - i) >= (store_b - upc_b)) {
                 restock_a = i;
             }
@@ -166,7 +206,7 @@ public class UpcScannedProductPage extends Activity implements View.OnClickListe
             return;
         }
 
-        for(int i = 1; i <= number; i++) {
+        for (int i = 1; i <= number; i++) {
             if ((store_b - upc_b - i) >= (store_a - upc_a)) {
                 restock_b = i;
             }
@@ -179,14 +219,14 @@ public class UpcScannedProductPage extends Activity implements View.OnClickListe
 
         if (restock_a > 0) {
             int temp = number - restock_a;
-            restock_b = temp/2;
+            restock_b = temp / 2;
             restock_a += temp - restock_b;
             return;
         }
 
         if (restock_b > 0) {
             int temp = number - restock_b;
-            restock_a = temp/2;
+            restock_a = temp / 2;
             restock_b += temp - restock_a;
             return;
         }

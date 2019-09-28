@@ -45,6 +45,15 @@
                         style="@style/add_order_edit_text_style"
                         android:layout_weight="1"
                         android:scrollHorizontally="true" />
+
+
+                    <EditText
+                        android:id="@+id/ed_upc_e"
+                        android:layout_width="0dp"
+                        style="@style/add_order_edit_text_style"
+                        android:layout_weight="1"
+                        android:scrollHorizontally="true"
+                        android:visibility="gone"/>
                 </TableRow>
 
                 <TextView
@@ -70,6 +79,15 @@
                         android:scrollHorizontally="true"
                         android:hint="@string/celect_name"/>
                         <requestFocus/>
+
+
+                    <TextView
+                        android:id="@+id/tv_prname"
+                        android:layout_width="0dp"
+                        style="@style/add_order_edit_text_style"
+                        android:layout_weight="1"
+                        android:scrollHorizontally="true"
+                        android:visibility="gone"/>
                 </TableRow>
             </TableLayout>
         </FrameLayout>

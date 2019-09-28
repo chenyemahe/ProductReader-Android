@@ -1,6 +1,7 @@
 package com.acme.productreader;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,7 @@ public class MenuPage extends Activity implements View.OnClickListener{
     public static final int PICKFILE_RESULT_CODE_2 = 2;
     private Uri fileUri;
     private String filePath;
+    ProgressDialog progress;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,11 @@ public class MenuPage extends Activity implements View.OnClickListener{
 
         submit = findViewById(R.id.menu_5);
         submit.setOnClickListener(this);
+        progress = new ProgressDialog(this);
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+// To dismiss the dialog
     }
 
 
@@ -48,6 +55,7 @@ public class MenuPage extends Activity implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_1:
+                progress.show();
                 //PrUtils.startFilePickForResult(this, PICKFILE_RESULT_CODE_1);
                 new Thread() {
                     public void run(){
@@ -56,6 +64,7 @@ public class MenuPage extends Activity implements View.OnClickListener{
                 }.start();
                 break;
             case R.id.menu_2:
+                progress.show();
                 new Thread() {
                     public void run(){
                         PrUtils.readExcelFileFromAssets(MenuPage.this, filePath, PICKFILE_RESULT_CODE_2);
@@ -85,5 +94,10 @@ public class MenuPage extends Activity implements View.OnClickListener{
             default:
                 break;
         }
+    }
+
+    public void dismissprogressbar(){
+        if(progress != null)
+            progress.dismiss();
     }
 }

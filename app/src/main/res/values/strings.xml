@@ -4,6 +4,8 @@
 
     <string name="main_menu">Menu</string>
     <string name="check_bar_code">Scan Code</string>
+    <string name="upc_enter">UPC enter</string>
+    <string name="not_fba">This item cannot SHIP.</string>
 
     <!--Menu -->
     <string name="menu_title">PRODUCT READER MENU</string>
@@ -19,6 +21,7 @@
     <string name="product_name">By Name</string>
     <string name="celect_name">Celect the auto displayed name</string>
     <string name="add">ADD</string>
+    <string name="number_no_match">The total number not match the Set number! Please check again!</string>
 
     <!-- upc product page -->
     <string name="upc_title">Product Update</string>
@@ -28,4 +31,8 @@
     <string name="upc_store2">Box B</string>
     <string name="upc_menu2">Restock A</string>
     <string name="upc_menu3">Restock B</string>
+    <string name="upc_menu4">Submit</string>
+    <string name="upc_error">The UPC is not right! Please enter again.</string>
+    <string name="upc_product_name">Product</string>
+    <string name="upc_product_number">Restock</string>
 </resources>

@@ -642,7 +642,7 @@ public class PrUtils {
         p.setPrice(value[4]);
         p.setAmazonFee(value[5]);
         if(value[6].contains("upc"))
-            value[6].replace("upc","");
+            value[6] = value[6].substring(3);
         if(value.length >6 && value[6] != null && (value[6].length() == 12 || value[6].length() == 13 || value[6].length() == 11))
             if(value[6].length() == 11)
                 p.setUPC("0" + value[6]);
@@ -850,7 +850,8 @@ public class PrUtils {
                     lineItemDataRecord.add(p.getFNSKU());
                     lineItemDataRecord.add(p.getPrice());
                     lineItemDataRecord.add(p.getFee());
-                    lineItemDataRecord.add(p.getUPC());
+                    String upc = "upc" + p.getUPC();
+                    lineItemDataRecord.add(upc);
                     lineItemDataRecord.add(p.getRequestNm());
                     lineItemDataRecord.add(p.getTotalAdd());
                     csvFilePrinter.printRecord(lineItemDataRecord);

@@ -112,7 +112,7 @@
                 android:textSize="15dp" />
         </LinearLayout>
 
-        <ExpandableListView
+        <!--ExpandableListView
             android:id="@+id/listView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
             android:layout_alignStart="@+id/button_ly"
             android:layout_alignLeft="@+id/button_ly"
             android:background="@color/color_background"
-            android:groupIndicator="@drawable/expend_indicator"/>
+            android:groupIndicator="@drawable/expend_indicator"/-->
 
         <Button
             android:id="@+id/bt_submit"

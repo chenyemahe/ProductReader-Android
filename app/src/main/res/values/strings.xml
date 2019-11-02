@@ -6,6 +6,7 @@
     <string name="check_bar_code">Scan Code</string>
     <string name="upc_enter">UPC enter</string>
     <string name="not_fba">This item cannot SHIP.</string>
+    <string name="input_upc">Input UPC</string>
 
     <!--Menu -->
     <string name="menu_title">PRODUCT READER MENU</string>

@@ -5,6 +5,7 @@
     <string name="main_menu">菜单</string>
     <string name="check_bar_code">请扫描</string>
     <string name="not_fba">此产品不能邮寄。</string>
+    <string name="input_upc">输入条码</string>
 
     <!--Menu -->
     <string name="menu_title">功能菜单</string>

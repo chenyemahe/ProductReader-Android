@@ -180,7 +180,8 @@ public class ScanActivity extends AppCompatActivity implements Camera.PreviewCal
                 y = 300;//yHeight - (beginningY * 2);
             }*/
             //bitmap = Bitmap.createBitmap(bitmap, beginningX, beginningY/4, y, x); // Bottom half of bitmap to increase ocr speed.
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, 1920, 1080);
+            //bitmap = Bitmap.createBitmap(bitmap, 0, 0, 1920, 1080);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, 640, 480);
             if (bitmap != null) {
                 scanning = true;
                 new ocrTask().execute(bitmap);

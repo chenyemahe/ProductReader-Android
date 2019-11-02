@@ -161,8 +161,9 @@ public class MainActivity extends AppCompatActivity {
             String type = result.getString("type");
             if (TextUtils.equals(type, PrConstant.type_fsku)) {
                 ProductProfile profile = PrManager.getManager().getDB().getAAProfileByFSKU(getContentResolver(),value);
-                if(profile != null)
-                    scanResults .setText(profile.getProductName());
+                if(profile != null){
+                    scanResults .setText(profile.getProductName() + "; UPC : " + profile.getUPC());
+                }
             }
             if (TextUtils.equals(type, PrConstant.type_upc)) {
                 ProductProfile profile = PrManager.getManager().getDB().getAAProfileByUpc(getContentResolver(),value);

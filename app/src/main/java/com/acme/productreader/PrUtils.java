@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -964,6 +965,8 @@ public class PrUtils {
                 Log.e("ye chen", "Error while flushing/closing fileWriter/csvPrinter!!!", e);
             }
         }
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         String subject = "补货单";
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("plain/text");

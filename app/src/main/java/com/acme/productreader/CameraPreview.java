@@ -52,8 +52,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Log.d(TAG, "[surfaceChanged]");
         Camera.Parameters parameters = mCamera.getParameters();
         Camera.Size previewSize = getBestPreviewSize(parameters);
-        parameters.setPreviewSize(previewSize.width, previewSize.height);
-        parameters.setPictureSize(previewSize.width, previewSize.height);
+        //parameters.setPreviewSize(previewSize.width, previewSize.height);
+        //parameters.setPictureSize(previewSize.width, previewSize.height);
+        parameters.setPreviewSize(640   , 480);
+        parameters.setPictureSize(640, 480);
         parameters.setJpegQuality(100);
         mCamera.setParameters(parameters);
         mCamera.startPreview();
